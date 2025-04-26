@@ -12,7 +12,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const api_Key= process.env.OPENAI_API_KEY;
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '')));
 
 // Ensure sounds directory exists
 const soundsDir = path.join(__dirname, 'public', 'sounds');
