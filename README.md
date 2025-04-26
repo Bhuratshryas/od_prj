@@ -1,2 +1,2 @@
-# od_prj
+# od_DET
 DET

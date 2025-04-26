@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Object Detection Beeper</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 20px;
+      background-color: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #video, #canvas {
+      width: 100%;
+      max-height: 70vh;
+      display: block;
+    }
+
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: #2c3e50;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .settings {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    input[type="range"] {
+      width: 60%;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .status {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #statusMessage {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #detectionInfo {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+
+    .loading-container {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+      display: none;
+    }
+
+    .loading-bar {
+      height: 4px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loading-progress {
+      position: absolute;
+      height: 100%;
+      width: 0%;
+      background-color: #3498db;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .loading-text {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+
+    .captured-image {
+      max-width: 200px;
+      max-height: 150px;
+      border-radius: 8px;
+      margin: 20px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    #result {
+      font-size: 36px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 20px 0;
+      min-height: 50px;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    #movePrompt {
+      font-size: 18px;
+      color: #e74c3c;
+      text-align: center;
+      margin: 10px 0;
+      font-weight: 500;
+      min-height: 27px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    #movePrompt.visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      input[type="range"] {
+        width: 100%;
+        margin-top: 5px;
+      }
+    }
+    
+    .audio-container {
+      display: none;
+    }
+  </style>
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <!-- COCO-SSD model for object detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Object Detection Beeper</h1>
+    
+    <div class="video-container">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="canvas"></canvas>
+      <div class="controls">
+        <button id="startBtn">Start Camera</button>
+        <button id="stopBtn" disabled>Stop</button>
+      </div>
+    </div>
+    
+    <div id="movePrompt">Keep moving the object</div>
+    
+    <div class="settings">
+      <h2>Settings</h2>
+      <div class="setting-item">
+        <label for="volumeControl">Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+      </div>
+      <div class="setting-item">
+        <label for="minFreq">Min Frequency (Hz):</label>
+        <input type="number" id="minFreq" min="100" max="1000" value="200">
+      </div>
+      <div class="setting-item">
+        <label for="maxFreq">Max Frequency (Hz):</label>
+        <input type="number" id="maxFreq" min="500" max="5000" value="2000">
+      </div>
+      <div class="setting-item">
+        <label for="beepToggle">Enable Beeping:</label>
+        <input type="checkbox" id="beepToggle" checked>
+      </div>
+      <div class="setting-item">
+        <label for="centerThreshold">Center Threshold (%):</label>
+        <input type="number" id="centerThreshold" min="50" max="100" value="90">
+      </div>
+      <div class="setting-item">
+        <label for="captureDelay">Capture Delay (ms):</label>
+        <input type="number" id="captureDelay" min="500" max="5000" value="1000">
+      </div>
+      <div class="setting-item">
+        <label for="soundsToggle">Enable Sounds:</label>
+        <input type="checkbox" id="soundsToggle" checked>
+      </div>
+      <div class="setting-item">
+        <label for="stopAlertToggle">Enable Stop Alert:</label>
+        <input type="checkbox" id="stopAlertToggle" checked>
+      </div>
+      <div class="setting-item">
+        <label for="movePromptToggle">Enable Movement Prompts:</label>
+        <input type="checkbox" id="movePromptToggle" checked>
+      </div>
+      <div class="setting-item">
+        <label for="movePromptDelay">Movement Prompt Delay (ms):</label>
+        <input type="number" id="movePromptDelay" min="500" max="5000" value="2000">
+      </div>
+    </div>
+    
+    <div class="loading-container" id="loading-container">
+      <div class="loading-bar">
+        <div class="loading-progress" id="loading-progress"></div>
+      </div>
+      <div class="loading-text">Analyzing image...</div>
+    </div>
+    
+    <img id="captured-image" class="captured-image" />
+    
+    <div class="status">
+      <div id="statusMessage">Camera inactive</div>
+      <div id="detectionInfo"></div>
+      <div id="result"></div>
+    </div>
+  </div>
+  
+  <!-- Audio elements for feedback sounds -->
+  <div class="audio-container">
+    <audio id="shutterSound" src="/sounds/shutter.mp3" preload="auto"></audio>
+    <audio id="processingSound" src="/sounds/processing.mp3" preload="auto" loop></audio>
+    <audio id="completeSound" src="/sounds/complete.mp3" preload="auto"></audio>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
