@@ -4,6 +4,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
+const rotateCameraBtn = document.getElementById('rotateCameraBtn'); // NEW
 const statusMessage = document.getElementById('statusMessage');
 const detectionInfo = document.getElementById('detectionInfo');
 const movePrompt = document.getElementById('movePrompt');
@@ -45,6 +46,9 @@ let movePromptTimeout = null;
 let movePromptActive = false;
 let movePromptSpeaking = false;
 
+// Camera state
+let currentFacingMode = 'user'; // 'user' = front, 'environment' = back
+
 // Settings
 let volume = 0.5;
 let minFreq = 200;
@@ -65,6 +69,7 @@ async function init() {
     // Set up event listeners
     startBtn.addEventListener('click', startCamera);
     stopBtn.addEventListener('click', stopCamera);
+    rotateCameraBtn.addEventListener('click', rotateCamera); // NEW
     volumeControl.addEventListener('input', updateVolume);
     minFreqInput.addEventListener('change', updateFrequencyRange);
     maxFreqInput.addEventListener('change', updateFrequencyRange);
@@ -92,6 +97,9 @@ async function init() {
     shutterSound.volume = 0.7;
     processingSound.volume = 0.3;
     completeSound.volume = 0.5;
+
+    // Set initial button text
+    rotateCameraBtn.textContent = 'Switch to Back Camera';
   } catch (error) {
     console.error('Error initializing app:', error);
     statusMessage.textContent = 'Error initializing: ' + error.message;
@@ -101,9 +109,15 @@ async function init() {
 // Start camera and detection
 async function startCamera() {
   try {
-    // Use the front camera!
+    // Stop any existing stream before starting a new one
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+
+    // Use the selected camera
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user' }, // <--- changed here
+      video: { facingMode: currentFacingMode },
       audio: false
     });
 
@@ -176,6 +190,20 @@ function stopCamera() {
     stopBtn.disabled = true;
     statusMessage.textContent = 'Camera inactive';
     detectionInfo.textContent = '';
+  }
+}
+
+// Camera rotate/toggle function
+function rotateCamera() {
+  if (currentFacingMode === 'user') {
+    currentFacingMode = 'environment';
+    rotateCameraBtn.textContent = 'Switch to Front Camera';
+  } else {
+    currentFacingMode = 'user';
+    rotateCameraBtn.textContent = 'Switch to Back Camera';
+  }
+  if (isRunning) {
+    startCamera(); // Restart camera with new facing mode
   }
 }
 
@@ -473,7 +501,6 @@ function drawBoundingBox(prediction) {
 // Update beep frequency based on object position
 function updateBeepFrequency(centeredness) {
   if (!enableBeep || !gainNode || isCapturing || isSpeaking || isPreCapturing) return;
-
   // Map centeredness to frequency range
   const frequency = minFreq + centeredness * (maxFreq - minFreq);
 
@@ -656,7 +683,6 @@ function captureImage() {
           const isUnknown = data.description.toLowerCase() === "unknown" ||
                             data.description.toLowerCase() === "unclear" ||
                             data.description.toLowerCase() === "unidentified";
-
           isSpeaking = true;
 
           if (isUnknown) {
