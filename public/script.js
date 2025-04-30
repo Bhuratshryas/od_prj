@@ -740,3 +740,96 @@ function captureImage() {
 
 // Initialize the app when the page loads
 window.addEventListener('load', init);
+
+// --- Tutorial Button and TTS Panel Logic ---
+
+window.addEventListener('DOMContentLoaded', function() {
+  const tutorialToggle = document.getElementById('tutorial-toggle');
+  const tutorialPanel = document.getElementById('tutorial-panel');
+  const playTutorialBtn = document.getElementById('play-tutorial');
+  const tutorialText = document.getElementById('tutorialText');
+
+  // The text to be spoken
+  const tutorialSpeechText = `
+    Let's try identifying an object with front facing camera.
+  `;
+
+  const tutorialSpeechText2 = `
+    Place your phone face up on the table in front of you.
+   `;
+
+  const tutorialSpeechText3 = `
+   Hold your ingredient above the camera and move it around slowly with the beeping sound until you hear the word "stop." That's it, its that simple!
+  `;
+  
+
+
+  // Toggle the tutorial panel
+  if (tutorialToggle && tutorialPanel) {
+    tutorialToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpen = tutorialPanel.style.display === 'block';
+      tutorialPanel.style.display = isOpen ? 'none' : 'block';
+      tutorialToggle.setAttribute('aria-label', isOpen ? 'Open tutorial' : 'Close tutorial');
+      tutorialPanel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+    });
+  }
+
+  // Play the tutorial using TTS
+  if (playTutorialBtn) {
+    playTutorialBtn.addEventListener('click', function() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        // Array of speech texts with their delays
+        const speechQueue = [
+          { text: tutorialSpeechText, delay: 1500 },
+          { text: tutorialSpeechText2, delay: 1500 },
+          { text: tutorialSpeechText3, delay: 1500 }
+        ];
+        
+        let currentIndex = 0;
+        
+        function processQueue() {
+          if (currentIndex >= speechQueue.length) return;
+          
+          const item = speechQueue[currentIndex];
+          currentIndex++;
+          
+          setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(item.text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // Start next speech when current one ends
+            utterance.onend = () => {
+              if (currentIndex < speechQueue.length) {
+                processQueue();
+              }
+            };
+            
+            speechSynthesis.speak(utterance);
+          }, item.delay);
+        }
+        
+        processQueue();
+        
+      } else {
+        alert('Sorry, your browser does not support text-to-speech.');
+      }
+    });
+  }
+  
+
+  // Hide panel if clicking outside
+  document.addEventListener('click', function(e) {
+    if (tutorialPanel && tutorialToggle &&
+        !tutorialPanel.contains(e.target) &&
+        !tutorialToggle.contains(e.target)) {
+      tutorialPanel.style.display = 'none';
+      tutorialToggle.setAttribute('aria-label', 'Open tutorial');
+      tutorialPanel.setAttribute('aria-hidden', 'true');
+    }
+  });
+});
