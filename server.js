@@ -54,12 +54,12 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You are an AI specialized in identifying the object in the user's hand and its expiration date range in months based on the brand. Respond ONLY with the object name and the expiration date range in months, separated by a comma (e.g., Milk, 1-2 months). No explanations, no extra words, just these two pieces of information. If no object is detected in the hand, respond with nothing."
+          content: "You are an AI specialized in identifying the object in the image and its expiration date range in months based on the brand. Respond ONLY with the object name and the expiration date range in months, separated by a comma (e.g., Milk, 1-2 months). No explanations, no extra words, just these two pieces of information. If no object is detected in the image, respond with nothing."
         },
         {
           role: "user",
           content: [
-            { type: "text", text: "What is the object in the user's hand and its expiration date range in months based on brand? Respond with only the object name and the expiration date range in months, separated by a comma. Do not respond if there is nothing in the hand." },
+            { type: "text", text: "What is the object in the image and its expiration date range in months based on brand? Respond with only the object name and the expiration date range in months, separated by a comma. Do not respond if there is nothing in the image." },
             { type: "image_url", image_url: { url: imageUrl } }
           ]
         }
