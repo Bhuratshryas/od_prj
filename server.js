@@ -79,7 +79,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
         description = `Object name is "${objectName}" and the expiration date can be "${expirationRange}"`;
         // Check for "I'm sorry" and "I can't identify any object in the image."
         if (
-          objectName === "I'm sorry" &&
+          objectName === "I'm sorry" ||
           expirationRange === "I can't identify any object in the image."
         ) {
           description = "Try again";
