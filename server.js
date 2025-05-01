@@ -76,7 +76,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
       // Expecting format: ObjectName, ExpirationRange
       const [objectName, expirationRange] = aiResponse.split(',').map(s => s.trim());
       if (objectName && expirationRange) {
-        description = `Object name is "${objectName}" and the expiration date can be "${expirationRange}"`;
+        description = `Ingredient name is "${objectName}" and the expiration date is around "${expirationRange}"`;
         // Check for "I'm sorry" and "I can't identify any object in the image."
         if (
           objectName === "I'm sorry" ||
