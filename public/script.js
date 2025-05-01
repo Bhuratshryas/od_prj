@@ -22,6 +22,9 @@ const loadingContainer = document.getElementById('loading-container');
 const loadingProgress = document.getElementById('loading-progress');
 const capturedImageElement = document.getElementById('captured-image');
 const resultDiv = document.getElementById('result');
+const openBtn = document.getElementById('openSettingsBtn');
+const closeBtn = document.getElementById('closeSettingsBtn');
+const modal = document.getElementById('settingsModal');
 
 // Audio elements
 const shutterSound = document.getElementById('shutterSound');
@@ -833,3 +836,28 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
+  
+    openBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+      modal.focus();
+    });
+  
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+  
+    // Close modal on ESC key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modal.classList.remove('active');
+      }
+    });
+  
+    // Optional: close modal when clicking outside content
+    modal.addEventListener('mousedown', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });

@@ -17,7 +17,7 @@
     
      <!-- Tutorial Button and Panel -->
      <div id="tutorial-container" class="tutorial-container">
-      <button id="play-tutorial" class="play-tutorial" aria-label="Play audio tutorial">🔊 Play Tutorial</button>
+      <button id="play-tutorial" class="play-tutorial" aria-label="Play audio tutorial">Tutorial</button>
   </div>
 
     <div class="video-container">
@@ -33,49 +33,63 @@
     
     <div id="movePrompt">Keep moving the object</div>
     
-    <div class="settings">
-      <h2>Settings</h2>
-      <div class="setting-item">
-        <label for="volumeControl">Volume:</label>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
-      </div>
-      <div class="setting-item">
-        <label for="minFreq">Min Frequency (Hz):</label>
-        <input type="number" id="minFreq" min="100" max="1000" value="200">
-      </div>
-      <div class="setting-item">
-        <label for="maxFreq">Max Frequency (Hz):</label>
-        <input type="number" id="maxFreq" min="500" max="5000" value="2000">
-      </div>
-      <div class="setting-item">
-        <label for="beepToggle">Enable Beeping:</label>
-        <input type="checkbox" id="beepToggle" checked>
-      </div>
-      <div class="setting-item">
-        <label for="centerThreshold">Center Threshold (%):</label>
-        <input type="number" id="centerThreshold" min="50" max="100" value="90">
-      </div>
-      <div class="setting-item">
-        <label for="captureDelay">Capture Delay (ms):</label>
-        <input type="number" id="captureDelay" min="500" max="5000" value="1000">
-      </div>
-      <div class="setting-item">
-        <label for="soundsToggle">Enable Sounds:</label>
-        <input type="checkbox" id="soundsToggle" checked>
-      </div>
-      <div class="setting-item">
-        <label for="stopAlertToggle">Enable Stop Alert:</label>
-        <input type="checkbox" id="stopAlertToggle" checked>
-      </div>
-      <div class="setting-item">
-        <label for="movePromptToggle">Enable Movement Prompts:</label>
-        <input type="checkbox" id="movePromptToggle" checked>
-      </div>
-      <div class="setting-item">
-        <label for="movePromptDelay">Movement Prompt Delay (ms):</label>
-        <input type="number" id="movePromptDelay" min="500" max="5000" value="2000">
-      </div>
+    <!-- Settings Button -->
+<button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
+  <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10" stroke="#0071e3" stroke-width="2"/>
+    <path d="M12 8v4l3 3" stroke="#0071e3" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  Settings
+</button>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
+  <div class="settings-modal-content">
+    <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
+    <h2 id="settingsTitle">Settings</h2>
+    <div class="setting-item">
+      <label for="volumeControl">Volume:</label>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
     </div>
+    <div class="setting-item">
+      <label for="minFreq">Min Frequency (Hz):</label>
+      <input type="number" id="minFreq" min="100" max="1000" value="200">
+    </div>
+    <div class="setting-item">
+      <label for="maxFreq">Max Frequency (Hz):</label>
+      <input type="number" id="maxFreq" min="500" max="5000" value="2000">
+    </div>
+    <div class="setting-item">
+      <label for="beepToggle">Enable Beeping:</label>
+      <input type="checkbox" id="beepToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="centerThreshold">Center Threshold (%):</label>
+      <input type="number" id="centerThreshold" min="50" max="100" value="90">
+    </div>
+    <div class="setting-item">
+      <label for="captureDelay">Capture Delay (ms):</label>
+      <input type="number" id="captureDelay" min="500" max="5000" value="1000">
+    </div>
+    <div class="setting-item">
+      <label for="soundsToggle">Enable Sounds:</label>
+      <input type="checkbox" id="soundsToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="stopAlertToggle">Enable Stop Alert:</label>
+      <input type="checkbox" id="stopAlertToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="movePromptToggle">Enable Movement Prompts:</label>
+      <input type="checkbox" id="movePromptToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="movePromptDelay">Movement Prompt Delay (ms):</label>
+      <input type="number" id="movePromptDelay" min="500" max="5000" value="2000">
+    </div>
+  </div>
+</div>
+
     
     <div class="loading-container" id="loading-container">
       <div class="loading-bar">
@@ -101,5 +115,9 @@
   </div>
 
   <script src="script.js"></script>
+
+    
+
+  
 </body>
 </html>
