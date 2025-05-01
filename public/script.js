@@ -837,27 +837,20 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-  
-    openBtn.addEventListener('click', () => {
-      modal.classList.add('active');
-      modal.focus();
-    });
-  
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-  
-    // Close modal on ESC key
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        modal.classList.remove('active');
-      }
-    });
-  
-    // Optional: close modal when clicking outside content
-    modal.addEventListener('mousedown', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-      }
-    });
+openBtn.addEventListener('click', () => {
+  modal.classList.add('active');
+  modal.focus();
+});
+closeBtn.addEventListener('click', () => {
+  modal.classList.remove('active');
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    modal.classList.remove('active');
+  }
+});
+modal.addEventListener('mousedown', (e) => {
+  if (e.target === modal) {
+    modal.classList.remove('active');
+  }
+});

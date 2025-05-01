@@ -421,6 +421,8 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   width: 400px;
   position: relative;
   animation: popIn 0.2s cubic-bezier(.4,0,.2,1);
+  max-height: 80vh;       
+  overflow-y: auto;       
 }
 
 @keyframes popIn {
@@ -444,6 +446,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   color: #0071e3;
   outline: none;
 }
+
 
 /* Responsive */
 @media (max-width: 600px) {
