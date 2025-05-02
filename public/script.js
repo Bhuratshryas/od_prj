@@ -764,7 +764,6 @@ window.addEventListener('DOMContentLoaded', function() {
   const tutorialSpeechText3 = `
    Now press the start button to activate the camera. Press stop after you are done to deactivate the camera.
   `;
- You can also rotate the camera by pressing the back camera button.
 
   // Toggle the tutorial panel
   if (tutorialToggle && tutorialPanel) {
