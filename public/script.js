@@ -754,18 +754,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // The text to be spoken
   const tutorialSpeechText = `
-    Place your phone face up on the table in front of you.
+    To practice, you need to place your phone face up on the table in front of you. You can then move your hand above the camera with the beeping sound until you hear the word "stop."
   `;
 
   const tutorialSpeechText2 = `
-    Press the start to activate the camera.
+    That's it, its that simple! You can also try with an ingredient after your practice for sometime. 
    `;
 
   const tutorialSpeechText3 = `
-   Hold your hand above the camera and move it around slowly with the beeping sound until you hear the word "stop." That's it, its that simple! You can try with an indrient after your practice for sometime. Use stop to deactivate the camera and you can also rotate the camera by pressing the back camera button.
+   Now press the start button to activate the camera. Press stop after you are done to deactivate the camera.
   `;
-  
-
+ You can also rotate the camera by pressing the back camera button.
 
   // Toggle the tutorial panel
   if (tutorialToggle && tutorialPanel) {
