@@ -754,15 +754,15 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // The text to be spoken
   const tutorialSpeechText = `
-    Let's try identifying an object with front facing camera.
+    Place your phone face up on the table in front of you.
   `;
 
   const tutorialSpeechText2 = `
-    Place your phone face up on the table in front of you.
+    Press the start to activate the camera.
    `;
 
   const tutorialSpeechText3 = `
-   Hold your ingredient above the camera and move it around slowly with the beeping sound until you hear the word "stop." That's it, its that simple!
+   Hold your hand above the camera and move it around slowly with the beeping sound until you hear the word "stop." That's it, its that simple! You can try with an indrient after your practice for sometime. Use stop to deactivate the camera and you can also rotate the camera by pressing the back camera button.
   `;
   
 
