@@ -754,18 +754,16 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // The text to be spoken
   const tutorialSpeechText = `
-    Let's try identifying an object with front facing camera.
+    To practice, you need to place your phone face up on the table in front of you. You can then move your hand above the camera with the beeping sound until you hear the word "stop."
   `;
 
   const tutorialSpeechText2 = `
-    Place your phone face up on the table in front of you.
+    That's it, its that simple! You can also try with an ingredient after your practice for sometime. 
    `;
 
   const tutorialSpeechText3 = `
-   Hold your ingredient above the camera and move it around slowly with the beeping sound until you hear the word "stop." That's it, its that simple!
+   Now press the start button to activate the camera. Press stop after you are done to deactivate the camera.
   `;
-  
-
 
   // Toggle the tutorial panel
   if (tutorialToggle && tutorialPanel) {
@@ -837,27 +835,20 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-  
-    openBtn.addEventListener('click', () => {
-      modal.classList.add('active');
-      modal.focus();
-    });
-  
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-  
-    // Close modal on ESC key
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        modal.classList.remove('active');
-      }
-    });
-  
-    // Optional: close modal when clicking outside content
-    modal.addEventListener('mousedown', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-      }
-    });
+openBtn.addEventListener('click', () => {
+  modal.classList.add('active');
+  modal.focus();
+});
+closeBtn.addEventListener('click', () => {
+  modal.classList.remove('active');
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    modal.classList.remove('active');
+  }
+});
+modal.addEventListener('mousedown', (e) => {
+  if (e.target === modal) {
+    modal.classList.remove('active');
+  }
+});
