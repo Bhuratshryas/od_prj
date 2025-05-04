@@ -2,8 +2,6 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const startBtn = document.getElementById('startBtn');
-const stopBtn = document.getElementById('stopBtn');
 const rotateCameraBtn = document.getElementById('rotateCameraBtn'); // NEW
 const statusMessage = document.getElementById('statusMessage');
 const detectionInfo = document.getElementById('detectionInfo');
@@ -65,13 +63,18 @@ let movePromptDelay = 2000;
 async function init() {
   try {
     // Load COCO-SSD model
-    statusMessage.textContent = 'Loading object detection model...';
     model = await cocoSsd.load();
-    statusMessage.textContent = 'Model loaded. Ready to start.';
+
+    // Play chime when model is loaded
+    playModelLoadedChime();
+
+    // Start camera automatically after chime
+    setTimeout(() => {
+      startCamera();
+    }, 1000); // Give a little buffer after chime
+
 
     // Set up event listeners
-    startBtn.addEventListener('click', startCamera);
-    stopBtn.addEventListener('click', stopCamera);
     rotateCameraBtn.addEventListener('click', rotateCamera); // NEW
     volumeControl.addEventListener('input', updateVolume);
     minFreqInput.addEventListener('change', updateFrequencyRange);
@@ -142,8 +145,6 @@ async function startCamera() {
 
     // Update UI
     isRunning = true;
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
     statusMessage.textContent = 'Camera active, detecting objects...';
     resultDiv.textContent = '';
     capturedImageElement.style.display = 'none';
@@ -189,8 +190,6 @@ function stopCamera() {
 
     // Update UI
     isRunning = false;
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
     statusMessage.textContent = 'Camera inactive';
     detectionInfo.textContent = '';
   }
@@ -273,6 +272,36 @@ function playCompleteSound() {
     completeSound.currentTime = 0;
     completeSound.play().catch(err => console.error('Error playing complete sound:', err));
   }
+}
+
+function playModelLoadedChime() {
+  if (!enableSounds) return;
+
+  const notes = [440, 554.37, 659.25]; // A4, C#5, E5
+  const duration = 0.2;
+  const gap = 0.1;
+
+  const context = new (window.AudioContext || window.webkitAudioContext)();
+  let currentTime = context.currentTime;
+
+  notes.forEach((freq) => {
+    const osc = context.createOscillator();
+    const gain = context.createGain();
+
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+
+    osc.connect(gain);
+    gain.connect(context.destination);
+
+    gain.gain.setValueAtTime(0.5, currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
+
+    osc.start(currentTime);
+    osc.stop(currentTime + duration);
+
+    currentTime += duration + gap;
+  });
 }
 
 // Play stop alert using text-to-speech
@@ -742,7 +771,12 @@ function captureImage() {
 }
 
 // Initialize the app when the page loads
-window.addEventListener('load', init);
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    playModelLoadedChime();
+    init();
+  }, 4000); // 5 seconds
+});
 
 // --- Tutorial Button and TTS Panel Logic ---
 

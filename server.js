@@ -76,7 +76,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
       // Expecting format: ObjectName, ExpirationRange
       const [objectName, expirationRange] = aiResponse.split(',').map(s => s.trim());
       if (objectName && expirationRange) {
-        description = `Ingredient name is "${objectName}" and the expiration date is around "${expirationRange}"`;
+        description = `"${objectName}". Expiration date is around "${expirationRange}"`;
         // Check for "I'm sorry" and "I can't identify any object in the image."
         if (
           objectName === "I'm sorry" ||
@@ -95,5 +95,8 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const portfinder = require('portfinder');
+portfinder.getPortPromise().then((port) => {
+  app.listen(port, () => console.log(`Server on port ${port}`));
+});
+
