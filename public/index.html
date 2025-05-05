@@ -13,6 +13,7 @@
 </head>
 <body>
   <div class="container">
+    <h1>Ident AI</h1>
     
      <!-- Tutorial Button and Panel -->
      <div id="tutorial-container" class="tutorial-container">
@@ -32,55 +33,58 @@
     
     <!-- Settings Button -->
 <button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
-  Ingredient Information Options
+  <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10" stroke="#0071e3" stroke-width="2"/>
+    <path d="M12 8v4l3 3" stroke="#0071e3" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  Settings
 </button>
 
 <!-- Settings Modal -->
 <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
   <div class="settings-modal-content">
-  
-    <!-- Close Settings Button -->
     <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
-    <h2 id="settingsTitle">Ingredient Information Options</h2>
-       <fieldset>
-      <legend></legend>
-        <!-- NEW settings prompts -->
-        <div class="new-setting-item">
-          <label for="name_prompt">Ingredient Name</label>
-          <input type="checkbox" id="name_prompt" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="expiration_range">Expiration Range</label>
-          <input type="checkbox" id="expiration_range" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="brand_name">Brand Name</label>
-          <input type="checkbox" id="brand_name" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="longer_descrip">Longer Description</label>
-          <input type="checkbox" id="longer_descrip" checked>
-        </div>
-      </fieldset>
-
-        <!-- Code to retreive values of prompt checkboxes, activated by Close Settings Button -->
-        <script>
-        document.getElementById('closeSettingsBtn').addEventListener('click', async () => {
-          const settings = {
-            name_prompt: document.getElementById('name_prompt').checked,
-            expiration_range: document.getElementById('expiration_range').checked,
-            longer_descrip: document.getElementById('longer_descrip').checked,
-            brand_name: document.getElementById('brand_name').checked
-          };
-
-          await fetch('/save-settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-          });
-
-        });
-        </script>
+    <h2 id="settingsTitle">Settings</h2>
+    <div class="setting-item">
+      <label for="volumeControl">Volume:</label>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+    </div>
+    <div class="setting-item">
+      <label for="minFreq">Min Frequency (Hz):</label>
+      <input type="number" id="minFreq" min="100" max="1000" value="200">
+    </div>
+    <div class="setting-item">
+      <label for="maxFreq">Max Frequency (Hz):</label>
+      <input type="number" id="maxFreq" min="500" max="5000" value="2000">
+    </div>
+    <div class="setting-item">
+      <label for="beepToggle">Enable Beeping:</label>
+      <input type="checkbox" id="beepToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="centerThreshold">Center Threshold (%):</label>
+      <input type="number" id="centerThreshold" min="50" max="100" value="90">
+    </div>
+    <div class="setting-item">
+      <label for="captureDelay">Capture Delay (ms):</label>
+      <input type="number" id="captureDelay" min="500" max="5000" value="1000">
+    </div>
+    <div class="setting-item">
+      <label for="soundsToggle">Enable Sounds:</label>
+      <input type="checkbox" id="soundsToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="stopAlertToggle">Enable Stop Alert:</label>
+      <input type="checkbox" id="stopAlertToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="movePromptToggle">Enable Movement Prompts:</label>
+      <input type="checkbox" id="movePromptToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label for="movePromptDelay">Movement Prompt Delay (ms):</label>
+      <input type="number" id="movePromptDelay" min="500" max="5000" value="2000">
+    </div>
     
   </div>
 </div>
@@ -90,12 +94,13 @@
       <div class="loading-bar">
         <div class="loading-progress" id="loading-progress"></div>
       </div>
+      <div class="loading-text">Analyzing image...</div>
     </div>
     
-    <img id="captured-image" class="captured-image" alt="">
-
+    <img id="captured-image" class="captured-image" />
     
     <div class="status">
+      <div id="statusMessage">Camera inactive</div>
       <div id="detectionInfo"></div>
       <div id="result"></div>
     </div>

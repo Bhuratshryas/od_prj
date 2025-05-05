@@ -46,9 +46,6 @@ let noObjectDetectedTime = null;
 let movePromptTimeout = null;
 let movePromptActive = false;
 let movePromptSpeaking = false;
-let movePromptInterval = null;
-let isPromptSpeaking = false;
-
 
 // Camera state
 let currentFacingMode = 'user'; // 'user' = front, 'environment' = back
@@ -65,26 +62,20 @@ let movePromptDelay = 2000;
 // Initialize the application
 async function init() {
   try {
-    // Start loading chime immediately
-    if (enableSounds) startLoadingChime();
-
     // Load COCO-SSD model
     model = await cocoSsd.load();
 
-    // Stop chime once model is loaded
-    stopLoadingChime();
-
-    // Optional: play short confirmation chime
+    // Play chime when model is loaded
     playModelLoadedChime();
 
-    // Start camera
+    // Start camera automatically after chime
     setTimeout(() => {
       startCamera();
-    }, 1000);
+    }, 1000); // Give a little buffer after chime
 
 
     // Set up event listeners
-    rotateCameraBtn.addEventListener('click', rotateCamera);
+    rotateCameraBtn.addEventListener('click', rotateCamera); // NEW
     volumeControl.addEventListener('input', updateVolume);
     minFreqInput.addEventListener('change', updateFrequencyRange);
     maxFreqInput.addEventListener('change', updateFrequencyRange);
@@ -114,12 +105,12 @@ async function init() {
     completeSound.volume = 0.5;
 
     // Set initial button text
-    rotateCameraBtn.textContent = 'Back Camera';
+    rotateCameraBtn.textContent = 'Switch to Back Camera';
   } catch (error) {
     console.error('Error initializing app:', error);
+    statusMessage.textContent = 'Error initializing: ' + error.message;
   }
 }
-
 
 // Start camera and detection
 async function startCamera() {
@@ -154,7 +145,7 @@ async function startCamera() {
 
     // Update UI
     isRunning = true;
-    //statusMessage.textContent = 'Camera active, detecting objects...';
+    statusMessage.textContent = 'Camera active, detecting objects...';
     resultDiv.textContent = '';
     capturedImageElement.style.display = 'none';
     hideMovePrompt();
@@ -170,7 +161,7 @@ async function startCamera() {
     detectObjects();
   } catch (error) {
     console.error('Error starting camera:', error);
-    //.textContent = 'Error accessing camera: ' + error.message;
+    statusMessage.textContent = 'Error accessing camera: ' + error.message;
   }
 }
 
@@ -199,7 +190,7 @@ function stopCamera() {
 
     // Update UI
     isRunning = false;
-    //statusMessage.textContent = 'Camera inactive';
+    statusMessage.textContent = 'Camera inactive';
     detectionInfo.textContent = '';
   }
 }
@@ -214,9 +205,7 @@ function rotateCamera() {
     rotateCameraBtn.textContent = 'Switch to Back Camera';
   }
   if (isRunning) {
-    setTimeout(() => {
-      startCamera();
-    }, 2000); // 1-second delay, Restart camera with new facing mode
+    startCamera(); // Restart camera with new facing mode
   }
 }
 
@@ -238,7 +227,7 @@ function initAudio() {
     oscillator.start();
   } catch (error) {
     console.error('Error initializing audio:', error);
-    //.textContent += ' (Audio error: ' + error.message + ')';
+    statusMessage.textContent += ' (Audio error: ' + error.message + ')';
   }
 }
 
@@ -315,38 +304,6 @@ function playModelLoadedChime() {
   });
 }
 
-//Model Loading Chime
-let loadingChimeOscillator = null;
-let loadingChimeGain = null;
-let loadingChimeContext = null;
-
-function startLoadingChime() {
-  loadingChimeContext = new (window.AudioContext || window.webkitAudioContext)();
-  loadingChimeOscillator = loadingChimeContext.createOscillator();
-  loadingChimeGain = loadingChimeContext.createGain();
-
-  loadingChimeOscillator.type = 'sine';
-  loadingChimeOscillator.frequency.setValueAtTime(660, loadingChimeContext.currentTime); // E5
-  loadingChimeGain.gain.setValueAtTime(0.2, loadingChimeContext.currentTime);
-
-  loadingChimeOscillator.connect(loadingChimeGain);
-  loadingChimeGain.connect(loadingChimeContext.destination);
-  loadingChimeOscillator.start();
-}
-
-function stopLoadingChime() {
-  if (loadingChimeOscillator) {
-    loadingChimeOscillator.stop();
-    loadingChimeOscillator.disconnect();
-    loadingChimeGain.disconnect();
-    loadingChimeContext.close();
-
-    loadingChimeOscillator = null;
-    loadingChimeGain = null;
-    loadingChimeContext = null;
-  }
-}
-
 // Play stop alert using text-to-speech
 function playStopAlert() {
   if (enableSounds && enableStopAlert) {
@@ -396,46 +353,30 @@ function playRotateObjectPrompt() {
 function showMovePrompt() {
   if (!movePromptActive && enableMovePrompt && !isCapturing && !isSpeaking && !isPreCapturing) {
     movePromptActive = true;
+    movePrompt.classList.add('visible');
 
-    if (!movePromptInterval) {
-      const speakPrompt = () => {
-        if (!enableSounds || movePromptSpeaking) return;
+    // Speak the prompt if sounds are enabled
+    if (enableSounds && !movePromptSpeaking) {
+      movePromptSpeaking = true;
+      const utterance = new SpeechSynthesisUtterance("Keep moving the object");
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.9;
 
-        movePromptSpeaking = true;
-        const utterance = new SpeechSynthesisUtterance("Keep moving the object");
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 0.9;
-
-        utterance.onend = () => {
-          movePromptSpeaking = false;
-        };
-
-        window.speechSynthesis.speak(utterance);
+      utterance.onend = () => {
+        movePromptSpeaking = false;
       };
 
-      // Speak immediately and then every 5 seconds
-      speakPrompt();
-      movePromptInterval = setInterval(speakPrompt, 10000);
+      window.speechSynthesis.speak(utterance);
     }
   }
 }
-
 
 // Hide move prompt
 function hideMovePrompt() {
   movePromptActive = false;
   movePrompt.classList.remove('visible');
-
-  if (movePromptInterval) {
-    clearInterval(movePromptInterval);
-    movePromptInterval = null;
-  }
-
-  window.speechSynthesis.cancel(); // Stop any current speech
-  movePromptSpeaking = false;
 }
-
 
 // Main object detection loop
 async function detectObjects() {
@@ -540,7 +481,7 @@ async function detectObjects() {
     requestAnimationFrame(detectObjects);
   } catch (error) {
     console.error('Error in object detection:', error);
-    //statusMessage.textContent = 'Detection error: ' + error.message;
+    statusMessage.textContent = 'Detection error: ' + error.message;
 
     // Try to continue despite error
     setTimeout(() => {
@@ -734,7 +675,7 @@ function captureImage() {
 
   // Display captured image
   capturedImageElement.src = canvas.toDataURL('image/jpeg');
-  //capturedImageElement.style.display = 'block';
+  capturedImageElement.style.display = 'block';
 
   // Start processing sound
   setTimeout(() => {
@@ -804,14 +745,11 @@ function captureImage() {
 
             // When speech ends, resume normal operation
             utterance.onend = () => {
-              setTimeout(() => {
-                isSpeaking = false;
-                isCapturing = false;
-                isPreCapturing = false;
-                noObjectDetectedTime = null; // Reset no object timer
-              }, 2000); // 3 second pause before resuming detection
+              isSpeaking = false;
+              isCapturing = false;
+              isPreCapturing = false;
+              noObjectDetectedTime = null; // Reset no object timer
             };
-            
 
             window.speechSynthesis.speak(utterance);
           }
@@ -832,17 +770,13 @@ function captureImage() {
   }, 'image/jpeg');
 }
 
-
-
 // Initialize the app when the page loads
 window.addEventListener('load', () => {
   setTimeout(() => {
     playModelLoadedChime();
     init();
-  }, 1000); // 5 seconds
+  }, 4000); // 5 seconds
 });
-
-
 
 // --- Tutorial Button and TTS Panel Logic ---
 
@@ -936,33 +870,19 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 openBtn.addEventListener('click', () => {
-  stopCamera(); // Stop the camera when settings open
-  window.speechSynthesis.cancel(); // Stop any speech
   modal.classList.add('active');
   modal.focus();
 });
-
 closeBtn.addEventListener('click', () => {
   modal.classList.remove('active');
-  setTimeout(() => {
-    startCamera();
-  }, 1000); // 1-second delay, Restart the camera when settings close
 });
-
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     modal.classList.remove('active');
-    setTimeout(() => {
-      startCamera();
-    }, 1000); // 1-second delay, Restart the camera when settings close via ESC
   }
 });
-
 modal.addEventListener('mousedown', (e) => {
   if (e.target === modal) {
     modal.classList.remove('active');
-    setTimeout(() => {
-      startCamera();
-    }, 1000); // 1-second delay, Restart the camera when settings close by clicking outside
   }
 });
