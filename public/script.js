@@ -48,6 +48,8 @@ let movePromptActive = false;
 let movePromptSpeaking = false;
 let movePromptInterval = null;
 let isPromptSpeaking = false;
+let movePromptCount = 0;
+let cameraPausedDueToInactivity = false;
 
 
 // Camera state
@@ -397,29 +399,32 @@ function showMovePrompt() {
   if (!movePromptActive && enableMovePrompt && !isCapturing && !isSpeaking && !isPreCapturing) {
     movePromptActive = true;
 
-    if (!movePromptInterval) {
-      const speakPrompt = () => {
-        if (!enableSounds || movePromptSpeaking) return;
+    const speakPrompt = () => {
+      if (!enableSounds || movePromptSpeaking || cameraPausedDueToInactivity) return;
 
-        movePromptSpeaking = true;
-        const utterance = new SpeechSynthesisUtterance("Keep moving the object");
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 0.9;
+      movePromptSpeaking = true;
+      const utterance = new SpeechSynthesisUtterance("Keep moving the object");
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.9;
 
-        utterance.onend = () => {
-          movePromptSpeaking = false;
-        };
+      utterance.onend = () => {
+        movePromptSpeaking = false;
+        movePromptCount++;
 
-        window.speechSynthesis.speak(utterance);
+        if (movePromptCount >= 3) {
+          pauseCameraDueToInactivity();
+        }
       };
 
-      // Speak immediately and then every 5 seconds
-      speakPrompt();
-      movePromptInterval = setInterval(speakPrompt, 10000);
-    }
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakPrompt(); // speak immediately
+    movePromptInterval = setInterval(speakPrompt, 5000);
   }
 }
+
 
 
 // Hide move prompt
@@ -435,6 +440,14 @@ function hideMovePrompt() {
   window.speechSynthesis.cancel(); // Stop any current speech
   movePromptSpeaking = false;
 }
+
+function pauseCameraDueToInactivity() {
+  cameraPausedDueToInactivity = true;
+  stopCamera();
+  movePrompt.textContent = "Scanning paused, move object to continue.";
+  movePrompt.classList.add('visible');
+}
+
 
 
 // Main object detection loop
@@ -909,7 +922,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 processQueue();
               }
             };
-            
+            //stopcamera();
             speechSynthesis.speak(utterance);
           }, item.delay);
         }
