@@ -13,17 +13,18 @@
 </head>
 <body>
   <div class="container">
+    <!-- Camera Status Indicator -->
+    <div id="cameraStatus" class="camera-status">Camera is starting...</div>
     
-     <!-- Switch Camera Button-->
+    <!-- Switch Camera Button-->
     <div class="video-container">
       <video id="video" autoplay muted playsinline></video>
       <canvas id="canvas"></canvas>
     </div>
-      <div class="controls">
-        <button id="rotateCameraBtn">Switch Camera</button>
-      </div>
+    <div class="controls">
+      <button id="rotateCameraBtn">Rotate Camera</button>
+    </div>
   
-    
     <div id="movePrompt">Keep moving the object</div>
     
     <!-- Settings Button -->
@@ -33,61 +34,51 @@
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
-    <div class="settings-modal-content">
-  
-    <!-- Close Settings Button -->
-    <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
-    <h2 id="settingsTitle">Ingredient Information Options</h2>
-       <fieldset>
-      <legend></legend>
-        <!-- NEW settings prompts -->
-        <div class="new-setting-item">
-          <label for="name_prompt">Ingredient Name</label>
-          <input type="checkbox" id="name_prompt" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="expiration_range">Expiration Range</label>
-          <input type="checkbox" id="expiration_range" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="brand_name">Brand Name</label>
-          <input type="checkbox" id="brand_name" checked>
-        </div>
-        <div class="new-setting-item">
-          <label for="longer_descrip">Longer Description</label>
-          <input type="checkbox" id="longer_descrip" checked>
-        </div>
-      </fieldset>
-
-
-        <!-- Code to retreive values of prompt checkboxes, activated by Close Settings Button -->
-        <script>
-        document.getElementById('closeSettingsBtn').addEventListener('click', async () => {
-          const settings = {
-            name_prompt: document.getElementById('name_prompt').checked,
-            expiration_range: document.getElementById('expiration_range').checked,
-            longer_descrip: document.getElementById('longer_descrip').checked,
-            brand_name: document.getElementById('brand_name').checked
-          };
-
-          await fetch('/save-settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-          });
-
-        });
-        </script>
-    
-
-  </div>
-
-</div>
-    <!-- tutorial button-->
-    <div id="tutorial-container" class="tutorial-container">
-      <button id="play-tutorial" class="play-tutorial" aria-label="Play audio tutorial">Tutorial</button>
+      <div class="settings-modal-content">
+        <!-- Close Settings Button -->
+        <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
+        <h2 id="settingsTitle">Ingredient Information Options</h2>
+        <fieldset>
+          <legend></legend>
+          <!-- NEW settings prompts -->
+          <div class="new-setting-item">
+            <label for="name_prompt">Ingredient Name</label>
+            <input type="checkbox" id="name_prompt" checked>
+          </div>
+          <div class="new-setting-item">
+            <label for="expiration_range">Expiration Range</label>
+            <input type="checkbox" id="expiration_range" checked>
+          </div>
+          <div class="new-setting-item">
+            <label for="brand_name">Brand Name</label>
+            <input type="checkbox" id="brand_name" checked>
+          </div>
+          <div class="new-setting-item">
+            <label for="longer_descrip">Longer Description</label>
+            <input type="checkbox" id="longer_descrip" checked>
+          </div>
+        </fieldset>
+      </div>
     </div>
-
+    
+    <!-- Tutorial Button -->
+    <button id="openTutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">
+      Tutorial
+    </button>
+    
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="tutorialTitle" tabindex="-1">
+      <div class="settings-modal-content">
+        <!-- Close Tutorial Button -->
+        <button id="closeTutorialBtn" class="settings-close-btn" aria-label="Close Tutorial">&times;</button>
+        <h2 id="tutorialTitle">How to Use This App</h2>
+        <div id="tutorialContent">
+          <p>To practice, you need to place your phone face up on the table in front of you. You can then move your hand above the camera with the beeping sound until you hear the word "stop."</p>
+          <p>That's it, its that simple! You can also try with an ingredient after your practice for sometime.</p>
+          <p>Now press the start button to activate the camera. Press stop after you are done to deactivate the camera.</p>
+        </div>
+      </div>
+    </div>
     
     <div class="loading-container" id="loading-container">
       <div class="loading-bar">
@@ -96,7 +87,6 @@
     </div>
     
     <img id="captured-image" class="captured-image" alt="">
-
     
     <div class="status">
       <div id="detectionInfo"></div>
@@ -112,9 +102,5 @@
   </div>
 
   <script src="script.js"></script>
-
-    
-
-  
 </body>
 </html>

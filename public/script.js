@@ -2,27 +2,30 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const rotateCameraBtn = document.getElementById('rotateCameraBtn'); // NEW
-const statusMessage = document.getElementById('statusMessage');
+const rotateCameraBtn = document.getElementById('rotateCameraBtn');
 const detectionInfo = document.getElementById('detectionInfo');
 const movePrompt = document.getElementById('movePrompt');
-const volumeControl = document.getElementById('volumeControl');
-const minFreqInput = document.getElementById('minFreq');
-const maxFreqInput = document.getElementById('maxFreq');
-const beepToggle = document.getElementById('beepToggle');
-const centerThresholdInput = document.getElementById('centerThreshold');
-const captureDelayInput = document.getElementById('captureDelay');
-const soundsToggle = document.getElementById('soundsToggle');
-const stopAlertToggle = document.getElementById('stopAlertToggle');
-const movePromptToggle = document.getElementById('movePromptToggle');
-const movePromptDelayInput = document.getElementById('movePromptDelay');
 const loadingContainer = document.getElementById('loading-container');
 const loadingProgress = document.getElementById('loading-progress');
 const capturedImageElement = document.getElementById('captured-image');
 const resultDiv = document.getElementById('result');
-const openBtn = document.getElementById('openSettingsBtn');
-const closeBtn = document.getElementById('closeSettingsBtn');
-const modal = document.getElementById('settingsModal');
+const cameraStatus = document.getElementById('cameraStatus');
+
+// Settings Modal Elements
+const openSettingsBtn = document.getElementById('openSettingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+
+// Tutorial Modal Elements
+const openTutorialBtn = document.getElementById('openTutorialBtn');
+const closeTutorialBtn = document.getElementById('closeTutorialBtn');
+const tutorialModal = document.getElementById('tutorialModal');
+
+// Settings checkboxes
+const namePromptCheckbox = document.getElementById('name_prompt');
+const expirationRangeCheckbox = document.getElementById('expiration_range');
+const brandNameCheckbox = document.getElementById('brand_name');
+const longerDescripCheckbox = document.getElementById('longer_descrip');
 
 // Audio elements
 const shutterSound = document.getElementById('shutterSound');
@@ -67,6 +70,9 @@ let movePromptDelay = 2000;
 // Initialize the application
 async function init() {
   try {
+    // Update camera status
+    updateCameraStatus('loading');
+    
     // Start loading chime immediately
     if (enableSounds) startLoadingChime();
 
@@ -76,56 +82,169 @@ async function init() {
     // Stop chime once model is loaded
     stopLoadingChime();
 
-    // Optional: play short confirmation chime
-    playModelLoadedChime();
+    // Announce model loaded with text-to-speech
+    announceModelLoaded();
 
-    // Start camera
-    setTimeout(() => {
-      startCamera();
-    }, 1000);
-
-
-    // Set up event listeners
-    rotateCameraBtn.addEventListener('click', rotateCamera);
-    volumeControl.addEventListener('input', updateVolume);
-    minFreqInput.addEventListener('change', updateFrequencyRange);
-    maxFreqInput.addEventListener('change', updateFrequencyRange);
-    beepToggle.addEventListener('change', toggleBeep);
-    centerThresholdInput.addEventListener('change', updateCenterThreshold);
-    captureDelayInput.addEventListener('change', updateCaptureDelay);
-    soundsToggle.addEventListener('change', toggleSounds);
-    stopAlertToggle.addEventListener('change', toggleStopAlert);
-    movePromptToggle.addEventListener('change', toggleMovePrompt);
-    movePromptDelayInput.addEventListener('change', updateMovePromptDelay);
-
-    // Initialize settings
-    volume = volumeControl.value;
-    minFreq = parseInt(minFreqInput.value);
-    maxFreq = parseInt(maxFreqInput.value);
-    enableBeep = beepToggle.checked;
-    centerThreshold = parseInt(centerThresholdInput.value);
-    captureDelay = parseInt(captureDelayInput.value);
-    enableSounds = soundsToggle.checked;
-    enableStopAlert = stopAlertToggle.checked;
-    enableMovePrompt = movePromptToggle.checked;
-    movePromptDelay = parseInt(movePromptDelayInput.value);
-
-    // Set audio volumes
-    shutterSound.volume = 0.7;
-    processingSound.volume = 0.3;
-    completeSound.volume = 0.5;
+    // Start camera immediately
+    startCamera();
 
     // Set initial button text
     rotateCameraBtn.textContent = 'Back Camera';
+    
+    // Set up event listeners for settings modal
+    openSettingsBtn.addEventListener('click', () => {
+      stopCamera();
+      updateCameraStatus('off');
+      settingsModal.classList.add('active');
+    });
+    
+    closeSettingsBtn.addEventListener('click', async () => {
+      // Save settings to server
+      await saveSettings();
+      settingsModal.classList.remove('active');
+      startCamera();
+    });
+    
+    // Set up event listeners for tutorial modal
+    openTutorialBtn.addEventListener('click', () => {
+      stopCamera();
+      updateCameraStatus('off');
+      tutorialModal.classList.add('active');
+      speakTutorialContent();
+    });
+    
+    closeTutorialBtn.addEventListener('click', () => {
+      tutorialModal.classList.remove('active');
+      window.speechSynthesis.cancel(); // Stop any ongoing speech
+      startCamera();
+    });
+    
+    // Close modals with ESC key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (settingsModal.classList.contains('active')) {
+          saveSettings().then(() => {
+            settingsModal.classList.remove('active');
+            startCamera();
+          });
+        }
+        if (tutorialModal.classList.contains('active')) {
+          tutorialModal.classList.remove('active');
+          window.speechSynthesis.cancel();
+          startCamera();
+        }
+      }
+    });
+    
+    // Close modals when clicking outside
+    settingsModal.addEventListener('mousedown', (e) => {
+      if (e.target === settingsModal) {
+        saveSettings().then(() => {
+          settingsModal.classList.remove('active');
+          startCamera();
+        });
+      }
+    });
+    
+    tutorialModal.addEventListener('mousedown', (e) => {
+      if (e.target === tutorialModal) {
+        tutorialModal.classList.remove('active');
+        window.speechSynthesis.cancel();
+        startCamera();
+      }
+    });
+    
+    // Camera rotation button
+    rotateCameraBtn.addEventListener('click', rotateCamera);
+    
   } catch (error) {
     console.error('Error initializing app:', error);
+    updateCameraStatus('error', error.message);
   }
 }
 
+// Save settings to server
+async function saveSettings() {
+  try {
+    const settings = {
+      name_prompt: namePromptCheckbox.checked,
+      expiration_range: expirationRangeCheckbox.checked,
+      longer_descrip: longerDescripCheckbox.checked,
+      brand_name: brandNameCheckbox.checked
+    };
+
+    const response = await fetch('/save-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save settings');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving settings:', error);
+  }
+}
+
+// Update camera status indicator
+function updateCameraStatus(status, errorMessage = '') {
+  switch(status) {
+    case 'on':
+      cameraStatus.textContent = 'Camera is running';
+      cameraStatus.classList.remove('off');
+      break;
+    case 'off':
+      cameraStatus.textContent = 'Camera is turned off';
+      cameraStatus.classList.add('off');
+      break;
+    case 'loading':
+      cameraStatus.textContent = 'Camera is starting...';
+      cameraStatus.classList.remove('off');
+      break;
+    case 'error':
+      cameraStatus.textContent = 'Camera error: ' + errorMessage;
+      cameraStatus.classList.add('off');
+      break;
+  }
+}
+
+// Announce model loaded with text-to-speech
+function announceModelLoaded() {
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance("COCO SSD Model Loaded");
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+// Speak tutorial content
+function speakTutorialContent() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); // Cancel any ongoing speech
+    
+    const paragraphs = document.querySelectorAll('#tutorialContent p');
+    
+    paragraphs.forEach(paragraph => {
+      const utterance = new SpeechSynthesisUtterance(paragraph.textContent);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      window.speechSynthesis.speak(utterance);
+    });
+  }
+}
 
 // Start camera and detection
 async function startCamera() {
   try {
+    // Update status to loading
+    updateCameraStatus('loading');
+    
     // Stop any existing stream before starting a new one
     if (video.srcObject) {
       video.srcObject.getTracks().forEach(track => track.stop());
@@ -139,6 +258,9 @@ async function startCamera() {
     });
 
     video.srcObject = stream;
+    video.style.display = 'block';
+    canvas.style.display = 'block';
+    document.querySelector('.video-container').style.display = 'block';
 
     // Wait for video to be ready
     await new Promise(resolve => {
@@ -156,10 +278,12 @@ async function startCamera() {
 
     // Update UI
     isRunning = true;
-    //statusMessage.textContent = 'Camera active, detecting objects...';
     resultDiv.textContent = '';
     capturedImageElement.style.display = 'none';
     hideMovePrompt();
+    
+    // Update camera status to on
+    updateCameraStatus('on');
 
     // Reset timers
     noObjectDetectedTime = null;
@@ -172,7 +296,7 @@ async function startCamera() {
     detectObjects();
   } catch (error) {
     console.error('Error starting camera:', error);
-    //.textContent = 'Error accessing camera: ' + error.message;
+    updateCameraStatus('error', error.message);
   }
 }
 
@@ -201,7 +325,6 @@ function stopCamera() {
 
     // Update UI
     isRunning = false;
-    //statusMessage.textContent = 'Camera inactive';
     detectionInfo.textContent = '';
   }
 }
@@ -216,9 +339,7 @@ function rotateCamera() {
     rotateCameraBtn.textContent = 'Switch to Back Camera';
   }
   if (isRunning) {
-    setTimeout(() => {
-      startCamera();
-    }, 2000); // 1-second delay, Restart camera with new facing mode
+    startCamera(); // Restart camera with new facing mode immediately
   }
 }
 
@@ -240,7 +361,6 @@ function initAudio() {
     oscillator.start();
   } catch (error) {
     console.error('Error initializing audio:', error);
-    //.textContent += ' (Audio error: ' + error.message + ')';
   }
 }
 
@@ -287,6 +407,7 @@ function playCompleteSound() {
   }
 }
 
+// Play model loaded chime
 function playModelLoadedChime() {
   if (!enableSounds) return;
 
@@ -317,7 +438,7 @@ function playModelLoadedChime() {
   });
 }
 
-//Model Loading Chime
+// Model Loading Chime
 let loadingChimeOscillator = null;
 let loadingChimeGain = null;
 let loadingChimeContext = null;
@@ -398,6 +519,7 @@ function playRotateObjectPrompt() {
 function showMovePrompt() {
   if (!movePromptActive && enableMovePrompt && !isCapturing && !isSpeaking && !isPreCapturing) {
     movePromptActive = true;
+    movePrompt.classList.add('visible');
 
     const speakPrompt = () => {
       if (!enableSounds || movePromptSpeaking || cameraPausedDueToInactivity) return;
@@ -436,7 +558,7 @@ function hideMovePrompt() {
     clearInterval(movePromptInterval);
     movePromptInterval = null;
   }
-
+  
   window.speechSynthesis.cancel(); // Stop any current speech
   movePromptSpeaking = false;
 }
@@ -449,6 +571,61 @@ function pauseCameraDueToInactivity() {
 }
 
 
+// Draw bounding box and label for detected object
+function drawBoundingBox(prediction) {
+  const [x, y, width, height] = prediction.bbox;
+  const text = `${prediction.class} ${Math.round(prediction.score * 100)}%`;
+
+  // Draw bounding box
+  ctx.strokeStyle = '#00FFFF';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(x, y, width, height);
+
+  // Draw background for text
+  ctx.fillStyle = '#00FFFF';
+  const textWidth = ctx.measureText(text).width;
+  ctx.fillRect(x, y - 25, textWidth + 10, 25);
+
+  // Draw text
+  ctx.fillStyle = '#000000';
+  ctx.font = '18px Arial';
+  ctx.fillText(text, x + 5, y - 7);
+
+  // Draw center lines
+  ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+  ctx.lineWidth = 1;
+
+  // Vertical center line of the object
+  const centerX = x + width / 2;
+  ctx.beginPath();
+  ctx.moveTo(centerX, 0);
+  ctx.lineTo(centerX, canvas.height);
+  ctx.stroke();
+
+  // Vertical center line of the canvas
+  ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+  const videoCenterX = canvas.width / 2;
+  ctx.beginPath();
+  ctx.moveTo(videoCenterX, 0);
+  ctx.lineTo(videoCenterX, canvas.height);
+  ctx.stroke();
+}
+
+// Update beep frequency based on object position
+function updateBeepFrequency(centeredness) {
+  if (!enableBeep || !gainNode || isCapturing || isSpeaking || isPreCapturing) return;
+  
+  // Map centeredness to frequency range
+  const frequency = minFreq + centeredness * (maxFreq - minFreq);
+
+  // Update oscillator frequency
+  if (oscillator) {
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+  }
+
+  // Set volume based on whether object is detected
+  gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+}
 
 // Main object detection loop
 async function detectObjects() {
@@ -553,8 +730,7 @@ async function detectObjects() {
     requestAnimationFrame(detectObjects);
   } catch (error) {
     console.error('Error in object detection:', error);
-    //statusMessage.textContent = 'Detection error: ' + error.message;
-
+    
     // Try to continue despite error
     setTimeout(() => {
       if (isRunning) requestAnimationFrame(detectObjects);
@@ -562,151 +738,11 @@ async function detectObjects() {
   }
 }
 
-// Draw bounding box and label for detected object
-function drawBoundingBox(prediction) {
-  const [x, y, width, height] = prediction.bbox;
-  const text = `${prediction.class} ${Math.round(prediction.score * 100)}%`;
-
-  // Draw bounding box
-  ctx.strokeStyle = '#00FFFF';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(x, y, width, height);
-
-  // Draw background for text
-  ctx.fillStyle = '#00FFFF';
-  const textWidth = ctx.measureText(text).width;
-  ctx.fillRect(x, y - 25, textWidth + 10, 25);
-
-  // Draw text
-  ctx.fillStyle = '#000000';
-  ctx.font = '18px Arial';
-  ctx.fillText(text, x + 5, y - 7);
-
-  // Draw center lines
-  ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
-  ctx.lineWidth = 1;
-
-  // Vertical center line of the object
-  const centerX = x + width / 2;
-  ctx.beginPath();
-  ctx.moveTo(centerX, 0);
-  ctx.lineTo(centerX, canvas.height);
-  ctx.stroke();
-
-  // Vertical center line of the canvas
-  ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
-  const videoCenterX = canvas.width / 2;
-  ctx.beginPath();
-  ctx.moveTo(videoCenterX, 0);
-  ctx.lineTo(videoCenterX, canvas.height);
-  ctx.stroke();
-}
-
-// Update beep frequency based on object position
-function updateBeepFrequency(centeredness) {
-  if (!enableBeep || !gainNode || isCapturing || isSpeaking || isPreCapturing) return;
-  // Map centeredness to frequency range
-  const frequency = minFreq + centeredness * (maxFreq - minFreq);
-
-  // Update oscillator frequency
-  if (oscillator) {
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-  }
-
-  // Set volume based on whether object is detected
-  gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-}
-
-// Update volume setting
-function updateVolume() {
-  volume = parseFloat(volumeControl.value);
-  if (gainNode && enableBeep && !isCapturing && !isSpeaking && !isPreCapturing) {
-    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-  }
-}
-
-// Update frequency range settings
-function updateFrequencyRange() {
-  minFreq = parseInt(minFreqInput.value);
-  maxFreq = parseInt(maxFreqInput.value);
-  // Validate that max > min
-  if (minFreq >= maxFreq) {
-    maxFreq = minFreq + 100;
-    maxFreqInput.value = maxFreq;
-  }
-}
-
-// Toggle beep on/off
-function toggleBeep() {
-  enableBeep = beepToggle.checked;
-  if (gainNode) {
-    if (enableBeep && !isCapturing && !isSpeaking && !isPreCapturing) {
-      gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-    } else {
-      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    }
-  }
-}
-
-// Toggle sounds on/off
-function toggleSounds() {
-  enableSounds = soundsToggle.checked;
-}
-
-// Toggle stop alert on/off
-function toggleStopAlert() {
-  enableStopAlert = stopAlertToggle.checked;
-}
-
-// Toggle move prompt on/off
-function toggleMovePrompt() {
-  enableMovePrompt = movePromptToggle.checked;
-  if (!enableMovePrompt) {
-    hideMovePrompt();
-    if (movePromptTimeout) {
-      clearTimeout(movePromptTimeout);
-      movePromptTimeout = null;
-    }
-  }
-}
-
-// Update center threshold setting
-function updateCenterThreshold() {
-  centerThreshold = parseInt(centerThresholdInput.value);
-  // Validate range
-  if (centerThreshold < 50) {
-    centerThreshold = 50;
-    centerThresholdInput.value = centerThreshold;
-  } else if (centerThreshold > 100) {
-    centerThreshold = 100;
-    centerThresholdInput.value = centerThreshold;
-  }
-}
-
-// Update capture delay setting
-function updateCaptureDelay() {
-  captureDelay = parseInt(captureDelayInput.value);
-  // Validate range
-  if (captureDelay < 500) {
-    captureDelay = 500;
-    captureDelayInput.value = captureDelay;
-  }
-}
-
-// Update move prompt delay setting
-function updateMovePromptDelay() {
-  movePromptDelay = parseInt(movePromptDelayInput.value);
-  // Validate range
-  if (movePromptDelay < 500) {
-    movePromptDelay = 500;
-    movePromptDelayInput.value = movePromptDelay;
-  }
-}
-
 // Capture image when object is centered
 function captureImage() {
   isCapturing = true;
   lastCaptureTime = Date.now();
+  
   // Stop beeping during capture and analysis (already stopped by pre-capture)
   if (gainNode) {
     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
@@ -731,6 +767,8 @@ function captureImage() {
 
   // Show loading bar
   loadingContainer.style.display = 'block';
+  loadingProgress.style.display = 'block';
+  document.querySelector('.loading-bar').style.display = 'block';
 
   // Animate loading bar
   let progress = 0;
@@ -747,7 +785,7 @@ function captureImage() {
 
   // Display captured image
   capturedImageElement.src = canvas.toDataURL('image/jpeg');
-  //capturedImageElement.style.display = 'block';
+  capturedImageElement.style.display = 'block';
 
   // Start processing sound
   setTimeout(() => {
@@ -774,6 +812,8 @@ function captureImage() {
 
       setTimeout(() => {
         loadingContainer.style.display = 'none';
+        loadingProgress.style.display = 'none';
+        document.querySelector('.loading-bar').style.display = 'none';
 
         // Play complete sound
         playCompleteSound();
@@ -786,6 +826,7 @@ function captureImage() {
           // Check if the response is "unknown" or similar
           const isUnknown = data.description.toLowerCase() === "unknown" ||
                             data.description.toLowerCase() === "unclear" ||
+                            data.description.toLowerCase() === "try again" ||
                             data.description.toLowerCase() === "unidentified";
           isSpeaking = true;
 
@@ -822,10 +863,9 @@ function captureImage() {
                 isCapturing = false;
                 isPreCapturing = false;
                 noObjectDetectedTime = null; // Reset no object timer
-              }, 2000); // 3 second pause before resuming detection
+              }, 2000); // 2 second pause before resuming detection
             };
             
-
             window.speechSynthesis.speak(utterance);
           }
         }, 1000);
@@ -834,6 +874,8 @@ function captureImage() {
     .catch(error => {
       clearInterval(loadingInterval);
       loadingContainer.style.display = 'none';
+      loadingProgress.style.display = 'none';
+      document.querySelector('.loading-bar').style.display = 'none';
       stopProcessingSound();
       console.error('Error:', error);
       resultDiv.textContent = 'Error processing image';
@@ -844,8 +886,6 @@ function captureImage() {
     });
   }, 'image/jpeg');
 }
-
-
 
 // Initialize the app when the page loads
 window.addEventListener('load', () => {
@@ -979,3 +1019,4 @@ modal.addEventListener('mousedown', (e) => {
     }, 1000); // 1-second delay, Restart the camera when settings close by clicking outside
   }
 });
+window.addEventListener('load', init);
