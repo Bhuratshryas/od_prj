@@ -388,16 +388,6 @@ button:focus-visible, .tutorial-toggle:focus-visible {
 }
 
 .backCamera-controls {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  padding: 0;
-  margin: 0;
   flex: 1;
   margin: 0;
   border-radius: 0;
@@ -411,6 +401,25 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   width: 100%;
   border: none;
   cursor: pointer;
+}
+.backCamera-controls:hover,
+.backCamera-controls:focus {
+  background: linear-gradient(90deg, #2997ff 60%, #0071e3 100%);
+  box-shadow: 0 4px 16px rgba(41,151,255,0.09);
+  transform: translateY(-1px) scale(1.03);
+}
+.backCamera-controls:disabled {
+  background: #d1d5db;
+  color: #7b7b7b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.backCamera-controls:disabled:hover,
+.backCamera-controls:disabled:focus {
+  background: #d1d5db;
+  color: #7b7b7b;
+  box-shadow: none;
+  transform: none;
 }
 
 /* Settings Button */
