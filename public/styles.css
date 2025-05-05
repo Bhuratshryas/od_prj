@@ -73,6 +73,7 @@ h2 {
   height: 100%;
   display: none;
   object-fit: cover;
+  display: none;
 }
 
 #canvas {
@@ -221,6 +222,7 @@ input[type="number"] {
   font-size: 0.95rem;
   color: #6e6e73;
   text-align: center;
+  display: none;
 }
 
 /* Captured Image */
@@ -338,6 +340,7 @@ input[type="number"] {
   .video-container {
     border-radius: 8px;
     aspect-ratio: 16 / 9;
+    display: none;
   }
   .settings {
     padding: 12px 5px;
@@ -367,6 +370,7 @@ input[type="number"] {
   .captured-image {
     max-width: 98vw;
     max-height: 30vw;
+    display: none;
   }
 }
 
@@ -450,7 +454,6 @@ button:focus-visible, .tutorial-toggle:focus-visible {
 .settings-close-btn:hover,
 .settings-close-btn:focus {
   color: #0071e3;
-  outline: none;
 }
 
 
