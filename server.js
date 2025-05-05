@@ -141,7 +141,5 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
   }
 });
 
-const portfinder = require('portfinder');
-portfinder.getPortPromise().then((port) => {
-  app.listen(port, () => console.log(`Server on port ${port}`));
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
