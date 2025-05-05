@@ -21,16 +21,20 @@
       <video id="video" autoplay muted playsinline></video>
       <canvas id="canvas"></canvas>
     </div>
-    <div class="controls">
-      <button id="rotateCameraBtn">Rotate Camera</button>
+    <div class="camera-controls">
+      <button id="backCameraBtn">Rotate Camera</button>
+      <button id="ingredientInfoBtn" class="settings-open-btn" aria-label="Open Settings">
+        Ingredient Information Options
+      </button>
+      <button id="tutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">
+        Tutorial
+      </button>
     </div>
   
     <div id="movePrompt">Keep moving the object</div>
     
     <!-- Settings Button -->
-    <button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
-      Ingredient Information Options
-    </button>
+    
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
@@ -59,9 +63,7 @@
     </div>
     
     <!-- Tutorial Button -->
-    <button id="openTutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">
-      Tutorial
-    </button>
+    
 
     
     
