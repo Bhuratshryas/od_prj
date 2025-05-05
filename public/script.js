@@ -86,7 +86,9 @@ async function init() {
     announceModelLoaded();
 
     // Start camera immediately
-    startCamera();
+    setTimeout(() => {
+      startCamera();
+    }, 1000);
 
     // Set initial button text
     rotateCameraBtn.textContent = 'Back Camera';
@@ -102,7 +104,9 @@ async function init() {
       // Save settings to server
       await saveSettings();
       settingsModal.classList.remove('active');
-      startCamera();
+      setTimeout(() => {
+        startCamera();
+      }, 1000);
     });
     
     // Set up event listeners for tutorial modal
@@ -112,12 +116,14 @@ async function init() {
       tutorialModal.classList.add('active');
       //speakTutorialContent();
     });
-    
+
     
     closeTutorialBtn.addEventListener('click', () => {
       tutorialModal.classList.remove('active');
       window.speechSynthesis.cancel(); // Stop any ongoing speech
-      startCamera();
+      setTimeout(() => {
+        startCamera();
+      }, 1000);
     });
     
     // Close modals with ESC key
@@ -126,13 +132,17 @@ async function init() {
         if (settingsModal.classList.contains('active')) {
           saveSettings().then(() => {
             settingsModal.classList.remove('active');
-            startCamera();
+            setTimeout(() => {
+              startCamera();
+            }, 1000);
           });
         }
         if (tutorialModal.classList.contains('active')) {
           tutorialModal.classList.remove('active');
           window.speechSynthesis.cancel();
-          startCamera();
+          setTimeout(() => {
+            startCamera();
+          }, 1000);
         }
       }
     });
@@ -142,7 +152,9 @@ async function init() {
       if (e.target === settingsModal) {
         saveSettings().then(() => {
           settingsModal.classList.remove('active');
-          startCamera();
+          setTimeout(() => {
+            startCamera();
+          }, 1000);
         });
       }
     });
@@ -151,7 +163,9 @@ async function init() {
       if (e.target === tutorialModal) {
         tutorialModal.classList.remove('active');
         window.speechSynthesis.cancel();
-        startCamera();
+        setTimeout(() => {
+          startCamera();
+        }, 1000);
       }
     });
     
