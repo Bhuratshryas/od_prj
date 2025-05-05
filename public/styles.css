@@ -255,10 +255,12 @@ input[type="number"] {
   min-height: 27px;
   opacity: 0;
   transition: opacity 0.5s cubic-bezier(.4,0,.2,1);
+  display: none;
 }
 
 #movePrompt.visible {
   opacity: 1;
+  display: none;
 }
 
 /* Tutorial Button & Panel */
