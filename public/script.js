@@ -110,7 +110,7 @@ async function init() {
       stopCamera();
       updateCameraStatus('off');
       tutorialModal.classList.add('active');
-      speakTutorialContent();
+      //speakTutorialContent();
     });
     
     closeTutorialBtn.addEventListener('click', () => {
@@ -963,7 +963,7 @@ window.addEventListener('DOMContentLoaded', function() {
               }
             };
             //stopcamera();
-            speechSynthesis.speak(utterance);
+            //speechSynthesis.speak(utterance);
           }, item.delay);
         }
         
