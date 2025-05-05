@@ -87,11 +87,15 @@ h2 {
 /* Controls */
 .controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  padding: 12px 0;
-  background: transparent;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 0;
+  margin: 0;
 }
 
 button {
