@@ -51,6 +51,9 @@ let movePromptActive = false;
 let movePromptSpeaking = false;
 let movePromptInterval = null;
 let isPromptSpeaking = false;
+let movePromptCount = 0;
+let cameraPausedDueToInactivity = false;
+
 
 // Camera state
 let currentFacingMode = 'user'; // 'user' = front, 'environment' = back
@@ -518,29 +521,33 @@ function showMovePrompt() {
     movePromptActive = true;
     movePrompt.classList.add('visible');
 
-    if (!movePromptInterval) {
-      const speakPrompt = () => {
-        if (!enableSounds || movePromptSpeaking) return;
+    const speakPrompt = () => {
+      if (!enableSounds || movePromptSpeaking || cameraPausedDueToInactivity) return;
 
-        movePromptSpeaking = true;
-        const utterance = new SpeechSynthesisUtterance("Keep moving the object");
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 0.9;
+      movePromptSpeaking = true;
+      const utterance = new SpeechSynthesisUtterance("Keep moving the object");
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.9;
 
-        utterance.onend = () => {
-          movePromptSpeaking = false;
-        };
+      utterance.onend = () => {
+        movePromptSpeaking = false;
+        movePromptCount++;
 
-        window.speechSynthesis.speak(utterance);
+        if (movePromptCount >= 3) {
+          pauseCameraDueToInactivity();
+        }
       };
 
-      // Speak immediately and then every 5 seconds
-      speakPrompt();
-      movePromptInterval = setInterval(speakPrompt, 10000);
-    }
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakPrompt(); // speak immediately
+    movePromptInterval = setInterval(speakPrompt, 5000);
   }
 }
+
+
 
 // Hide move prompt
 function hideMovePrompt() {
@@ -555,6 +562,14 @@ function hideMovePrompt() {
   window.speechSynthesis.cancel(); // Stop any current speech
   movePromptSpeaking = false;
 }
+
+function pauseCameraDueToInactivity() {
+  cameraPausedDueToInactivity = true;
+  stopCamera();
+  movePrompt.textContent = "Scanning paused, move object to continue.";
+  movePrompt.classList.add('visible');
+}
+
 
 // Draw bounding box and label for detected object
 function drawBoundingBox(prediction) {
@@ -873,4 +888,135 @@ function captureImage() {
 }
 
 // Initialize the app when the page loads
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    playModelLoadedChime();
+    init();
+  }, 1000); // 5 seconds
+});
+
+
+
+// --- Tutorial Button and TTS Panel Logic ---
+
+window.addEventListener('DOMContentLoaded', function() {
+  const tutorialToggle = document.getElementById('tutorial-toggle');
+  const tutorialPanel = document.getElementById('tutorial-panel');
+  const playTutorialBtn = document.getElementById('play-tutorial');
+  const tutorialText = document.getElementById('tutorialText');
+
+  // The text to be spoken
+  const tutorialSpeechText = `
+    To practice, you need to place your phone face up on the table in front of you. You can then move your hand above the camera with the beeping sound until you hear the word "stop."
+  `;
+
+  const tutorialSpeechText2 = `
+    That's it, its that simple! You can also try with an ingredient after your practice for sometime. 
+   `;
+
+  const tutorialSpeechText3 = `
+   Now press the start button to activate the camera. Press stop after you are done to deactivate the camera.
+  `;
+
+  // Toggle the tutorial panel
+  if (tutorialToggle && tutorialPanel) {
+    tutorialToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpen = tutorialPanel.style.display === 'block';
+      tutorialPanel.style.display = isOpen ? 'none' : 'block';
+      tutorialToggle.setAttribute('aria-label', isOpen ? 'Open tutorial' : 'Close tutorial');
+      tutorialPanel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+    });
+  }
+
+  // Play the tutorial using TTS
+  if (playTutorialBtn) {
+    playTutorialBtn.addEventListener('click', function() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        // Array of speech texts with their delays
+        const speechQueue = [
+          { text: tutorialSpeechText, delay: 1500 },
+          { text: tutorialSpeechText2, delay: 1500 },
+          { text: tutorialSpeechText3, delay: 1500 }
+        ];
+        
+        let currentIndex = 0;
+        
+        function processQueue() {
+          if (currentIndex >= speechQueue.length) return;
+          
+          const item = speechQueue[currentIndex];
+          currentIndex++;
+          
+          setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(item.text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // Start next speech when current one ends
+            utterance.onend = () => {
+              if (currentIndex < speechQueue.length) {
+                processQueue();
+              }
+            };
+            //stopcamera();
+            speechSynthesis.speak(utterance);
+          }, item.delay);
+        }
+        
+        processQueue();
+        
+      } else {
+        alert('Sorry, your browser does not support text-to-speech.');
+      }
+    });
+  }
+  
+
+  // Hide panel if clicking outside
+  document.addEventListener('click', function(e) {
+    if (tutorialPanel && tutorialToggle &&
+        !tutorialPanel.contains(e.target) &&
+        !tutorialToggle.contains(e.target)) {
+      tutorialPanel.style.display = 'none';
+      tutorialToggle.setAttribute('aria-label', 'Open tutorial');
+      tutorialPanel.setAttribute('aria-hidden', 'true');
+    }
+  });
+});
+
+openBtn.addEventListener('click', () => {
+  stopCamera(); // Stop the camera when settings open
+  window.speechSynthesis.cancel(); // Stop any speech
+  modal.classList.add('active');
+  modal.focus();
+});
+
+closeBtn.addEventListener('click', () => {
+  modal.classList.remove('active');
+  setTimeout(() => {
+    startCamera();
+  }, 1000); // 1-second delay, Restart the camera when settings close
+});
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      startCamera();
+    }, 1000); // 1-second delay, Restart the camera when settings close via ESC
+  }
+});
+
+modal.addEventListener('mousedown', (e) => {
+  if (e.target === modal) {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      startCamera();
+    }, 1000); // 1-second delay, Restart the camera when settings close by clicking outside
+  }
+});
 window.addEventListener('load', init);
