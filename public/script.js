@@ -258,9 +258,9 @@ async function startCamera() {
     });
 
     video.srcObject = stream;
-    video.style.display = 'block';
-    canvas.style.display = 'block';
-    document.querySelector('.video-container').style.display = 'block';
+    //video.style.display = 'block';
+    //canvas.style.display = 'block';
+    //document.querySelector('.video-container').style.display = 'block';
 
     // Wait for video to be ready
     await new Promise(resolve => {
@@ -766,9 +766,9 @@ function captureImage() {
   resultDiv.textContent = '';
 
   // Show loading bar
-  loadingContainer.style.display = 'block';
-  loadingProgress.style.display = 'block';
-  document.querySelector('.loading-bar').style.display = 'block';
+  //loadingContainer.style.display = 'block';
+  //loadingProgress.style.display = 'block';
+  //document.querySelector('.loading-bar').style.display = 'block';
 
   // Animate loading bar
   let progress = 0;
@@ -784,8 +784,8 @@ function captureImage() {
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   // Display captured image
-  capturedImageElement.src = canvas.toDataURL('image/jpeg');
-  capturedImageElement.style.display = 'block';
+  //capturedImageElement.src = canvas.toDataURL('image/jpeg');
+  //capturedImageElement.style.display = 'block';
 
   // Start processing sound
   setTimeout(() => {
