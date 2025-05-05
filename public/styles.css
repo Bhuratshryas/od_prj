@@ -260,7 +260,7 @@ input[type="number"] {
 
 #movePrompt.visible {
   opacity: 1;
-  display: none;
+  display: block;
 }
 
 /* Tutorial Button & Panel */
