@@ -1035,3 +1035,30 @@ modal.addEventListener('mousedown', (e) => {
   }
 });
 window.addEventListener('load', init);
+
+// Add this to your script.js file
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the original buttons
+  const rotateCameraBtn = document.getElementById('rotateCameraBtn');
+  const openSettingsBtn = document.getElementById('openSettingsBtn');
+  const openTutorialBtn = document.getElementById('openTutorialBtn');
+  
+  // Get the new full-height buttons
+  const backCameraBtn = document.getElementById('backCameraBtn');
+  const ingredientInfoBtn = document.getElementById('ingredientInfoBtn');
+  const tutorialBtn = document.getElementById('tutorialBtn');
+  
+  // Add event listeners to the new buttons that trigger clicks on the original buttons
+  backCameraBtn.addEventListener('click', function() {
+    rotateCameraBtn.click();
+  });
+  
+  ingredientInfoBtn.addEventListener('click', function() {
+    openSettingsBtn.click();
+  });
+  
+  tutorialBtn.addEventListener('click', function() {
+    openTutorialBtn.click();
+  });
+});
+
