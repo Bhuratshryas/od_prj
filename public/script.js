@@ -113,6 +113,7 @@ async function init() {
       //speakTutorialContent();
     });
     
+    
     closeTutorialBtn.addEventListener('click', () => {
       tutorialModal.classList.remove('active');
       window.speechSynthesis.cancel(); // Stop any ongoing speech
