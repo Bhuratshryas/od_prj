@@ -104,6 +104,7 @@ button {
   letter-spacing: 0.01em;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  justify-content: center;
 }
 
 button:hover:not(:disabled),
@@ -260,10 +261,12 @@ input[type="number"] {
 
 /* Tutorial Button & Panel */
 .tutorial-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  padding: 12px 0;
+  background: transparent;
 }
 
 .tutorial-toggle {
@@ -282,11 +285,6 @@ input[type="number"] {
   justify-content: center;
 }
 
-.tutorial-toggle:hover,
-.tutorial-toggle:focus {
-  background: #2997ff;
-  outline: none;
-}
 
 .tutorial-panel {
   display: none;
@@ -308,22 +306,19 @@ input[type="number"] {
 }
 
 .play-tutorial {
-  margin-top: 12px;
-  background: #34c759;
+  background: linear-gradient(90deg, #30b158 60%, #29ff70 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 1rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  justify-content: center;
 }
 
-.play-tutorial:hover,
-.play-tutorial:focus {
-  background: #30b158;
-  outline: none;
-}
 
 /* Hide audio container by default */
 .audio-container {

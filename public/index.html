@@ -14,11 +14,7 @@
 <body>
   <div class="container">
     
-     <!-- Tutorial Button and Panel -->
-     <div id="tutorial-container" class="tutorial-container">
-      <button id="play-tutorial" class="play-tutorial" aria-label="Play audio tutorial">Tutorial</button>
-  </div>
-
+     <!-- Switch Camera Button-->
     <div class="video-container">
       <video id="video" autoplay muted playsinline></video>
       <canvas id="canvas"></canvas>
@@ -31,13 +27,13 @@
     <div id="movePrompt">Keep moving the object</div>
     
     <!-- Settings Button -->
-<button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
-  Ingredient Information Options
-</button>
+    <button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
+      Ingredient Information Options
+    </button>
 
-<!-- Settings Modal -->
-<div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
-  <div class="settings-modal-content">
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
+    <div class="settings-modal-content">
   
     <!-- Close Settings Button -->
     <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
@@ -63,6 +59,7 @@
         </div>
       </fieldset>
 
+
         <!-- Code to retreive values of prompt checkboxes, activated by Close Settings Button -->
         <script>
         document.getElementById('closeSettingsBtn').addEventListener('click', async () => {
@@ -82,8 +79,14 @@
         });
         </script>
     
+
   </div>
+
 </div>
+    <!-- tutorial button-->
+    <div id="tutorial-container" class="tutorial-container">
+      <button id="play-tutorial" class="play-tutorial" aria-label="Play audio tutorial">Tutorial</button>
+    </div>
 
     
     <div class="loading-container" id="loading-container">
