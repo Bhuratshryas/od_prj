@@ -13,7 +13,6 @@
 </head>
 <body>
   <div class="container">
-    
     <!-- Camera Status Indicator -->
     <div id="cameraStatus" class="camera-status">Camera is starting...</div>
     
@@ -59,24 +58,6 @@
             <input type="checkbox" id="longer_descrip" checked>
           </div>
         </fieldset>
-
-        <!-- Code to retreive values of prompt checkboxes, activated by Close Settings Button -->
-        <script>
-        document.getElementById('closeSettingsBtn').addEventListener('click', async () => {
-          const settings = {
-            name_prompt: document.getElementById('name_prompt').checked,
-            expiration_range: document.getElementById('expiration_range').checked,
-            longer_descrip: document.getElementById('longer_descrip').checked,
-            brand_name: document.getElementById('brand_name').checked
-          };
-
-          await fetch('/save-settings', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-          });
-        });
-        </script>
       </div>
     </div>
     
