@@ -9,7 +9,6 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -27,7 +26,6 @@ body {
   margin: 40px auto 0 auto;
   padding: 32px 24px;
   border-radius: 24px;
-  transition: box-shadow 0.2s;
 }
 
 @media (max-width: 900px) {
@@ -94,7 +92,7 @@ h2 {
 
 button {
   padding: 12px 28px;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
+  background: #0071e3;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -103,15 +101,13 @@ button {
   font-weight: 500;
   letter-spacing: 0.01em;
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
   justify-content: center;
 }
 
 button:hover:not(:disabled),
 button:focus:not(:disabled) {
-  background: linear-gradient(90deg, #2997ff 60%, #0071e3 100%);
+  background: #2997ff;
   box-shadow: 0 4px 16px rgba(41,151,255,0.09);
-  transform: translateY(-1px) scale(1.03);
 }
 
 button:disabled {
@@ -209,9 +205,8 @@ input[type="number"] {
   position: absolute;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
+  background: #0071e3;
   border-radius: 5px;
-  transition: width 0.4s cubic-bezier(.4,0,.2,1);
   display: none;
 }
 
@@ -239,7 +234,6 @@ input[type="number"] {
   color: #111;
   margin: 26px 0 12px 0;
   min-height: 52px;
-  transition: all 0.3s cubic-bezier(.4,0,.2,1);
   text-align: center;
 }
 
@@ -251,7 +245,6 @@ input[type="number"] {
   font-weight: 500;
   min-height: 27px;
   opacity: 0;
-  transition: opacity 0.5s cubic-bezier(.4,0,.2,1);
 }
 
 #movePrompt.visible {
@@ -273,7 +266,6 @@ input[type="number"] {
   cursor: pointer;
   margin: 0 0 18px 0;
   box-shadow: 0 1.5px 4px rgba(0,0,0,0.04);
-  transition: background 0.15s, border 0.15s;
   justify-content: center;
 }
 
@@ -294,7 +286,6 @@ input[type="number"] {
   background: rgba(30, 41, 59, 0.18);
   justify-content: center;
   align-items: center;
-  transition: background 0.2s;
 }
 
 .settings-modal.active {
@@ -310,14 +301,8 @@ input[type="number"] {
   max-width: 95vw;
   width: 400px;
   position: relative;
-  animation: popIn 0.2s cubic-bezier(.4,0,.2,1);
   max-height: 80vh;       
   overflow-y: auto;       
-}
-
-@keyframes popIn {
-  from { transform: scale(0.96) translateY(20px); opacity: 0; }
-  to   { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .settings-close-btn {
@@ -329,60 +314,12 @@ input[type="number"] {
   font-size: 2rem;
   color: #bbb;
   cursor: pointer;
-  transition: color 0.18s;
 }
 
 .settings-close-btn:hover,
 .settings-close-btn:focus {
   color: #0071e3;
   outline: none;
-}
-
-/* Tutorial Specific Styles */
-.tutorial-btn {
-  margin-bottom: 18px;
-}
-
-.tutorial-progress-container {
-  width: 100%;
-  margin: 20px 0;
-}
-
-.tutorial-progress-bar {
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 5px;
-  overflow: hidden;
-  position: relative;
-}
-
-.tutorial-progress {
-  position: absolute;
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
-  border-radius: 5px;
-  transition: width 0.2s linear;
-}
-
-.play-tutorial-btn {
-  margin-top: 15px;
-  background: linear-gradient(90deg, #30b158 60%, #29ff70 100%);
-  width: 100%;
-}
-
-.play-tutorial-btn:hover,
-.play-tutorial-btn:focus {
-  background: linear-gradient(90deg, #29ff70 60%, #30b158 100%);
-}
-
-#tutorialContent {
-  line-height: 1.6;
-  font-size: 1rem;
-}
-
-#tutorialContent p {
-  margin-bottom: 15px;
 }
 
 /* Audio container */

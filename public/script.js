@@ -3,7 +3,6 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const rotateCameraBtn = document.getElementById('rotateCameraBtn');
-const statusMessage = document.getElementById('statusMessage');
 const detectionInfo = document.getElementById('detectionInfo');
 const movePrompt = document.getElementById('movePrompt');
 const loadingContainer = document.getElementById('loading-container');
@@ -20,8 +19,6 @@ const settingsModal = document.getElementById('settingsModal');
 const openTutorialBtn = document.getElementById('openTutorialBtn');
 const closeTutorialBtn = document.getElementById('closeTutorialBtn');
 const tutorialModal = document.getElementById('tutorialModal');
-const playTutorialBtn = document.getElementById('playTutorialBtn');
-const tutorialProgress = document.getElementById('tutorialProgress');
 
 // Audio elements
 const shutterSound = document.getElementById('shutterSound');
@@ -63,8 +60,8 @@ async function init() {
     // Stop chime once model is loaded
     stopLoadingChime();
 
-    // Optional: play short confirmation chime
-    playModelLoadedChime();
+    // Announce model loaded with text-to-speech
+    announceModelLoaded();
 
     // Start camera
     setTimeout(() => {
@@ -78,7 +75,6 @@ async function init() {
     openSettingsBtn.addEventListener('click', () => {
       stopCamera();
       settingsModal.classList.add('active');
-      settingsModal.focus();
     });
     
     closeSettingsBtn.addEventListener('click', () => {
@@ -92,20 +88,16 @@ async function init() {
     openTutorialBtn.addEventListener('click', () => {
       stopCamera();
       tutorialModal.classList.add('active');
-      tutorialModal.focus();
+      speakTutorialContent();
     });
     
     closeTutorialBtn.addEventListener('click', () => {
       tutorialModal.classList.remove('active');
       window.speechSynthesis.cancel(); // Stop any ongoing speech
-      tutorialProgress.style.width = '0%'; // Reset progress bar
       setTimeout(() => {
         startCamera();
       }, 1000);
     });
-    
-    // Play tutorial button
-    playTutorialBtn.addEventListener('click', playTutorial);
     
     // Close modals with ESC key
     window.addEventListener('keydown', (e) => {
@@ -119,7 +111,6 @@ async function init() {
         if (tutorialModal.classList.contains('active')) {
           tutorialModal.classList.remove('active');
           window.speechSynthesis.cancel();
-          tutorialProgress.style.width = '0%';
           setTimeout(() => {
             startCamera();
           }, 1000);
@@ -141,7 +132,6 @@ async function init() {
       if (e.target === tutorialModal) {
         tutorialModal.classList.remove('active');
         window.speechSynthesis.cancel();
-        tutorialProgress.style.width = '0%';
         setTimeout(() => {
           startCamera();
         }, 1000);
@@ -153,6 +143,34 @@ async function init() {
     
   } catch (error) {
     console.error('Error initializing app:', error);
+  }
+}
+
+// Announce model loaded with text-to-speech
+function announceModelLoaded() {
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance("COCO SSD Model Loaded");
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+// Speak tutorial content
+function speakTutorialContent() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); // Cancel any ongoing speech
+    
+    const paragraphs = document.querySelectorAll('#tutorialContent p');
+    
+    paragraphs.forEach(paragraph => {
+      const utterance = new SpeechSynthesisUtterance(paragraph.textContent);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      window.speechSynthesis.speak(utterance);
+    });
   }
 }
 
@@ -363,65 +381,27 @@ function hideMovePrompt() {
   movePromptSpeaking = false;
 }
 
-// Play tutorial using text-to-speech with progress bar
-function playTutorial() {
-  if (!('speechSynthesis' in window)) {
-    alert('Sorry, your browser does not support text-to-speech!');
-    return;
+// Main object detection loop
+async function detectObjects() {
+  if (!isRunning) return;
+
+  try {
+    // Perform object detection
+    const predictions = await model.detect(video);
+
+    // Clear previous drawings
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Continue the detection loop
+    requestAnimationFrame(detectObjects);
+  } catch (error) {
+    console.error('Error in object detection:', error);
+    
+    // Try to continue despite error
+    setTimeout(() => {
+      if (isRunning) requestAnimationFrame(detectObjects);
+    }, 1000);
   }
-  
-  // Cancel any ongoing speech
-  window.speechSynthesis.cancel();
-  
-  // Reset progress bar
-  tutorialProgress.style.width = '0%';
-  
-  // Get tutorial content paragraphs
-  const paragraphs = document.querySelectorAll('#tutorialContent p');
-  const texts = Array.from(paragraphs).map(p => p.textContent);
-  
-  // Create speech utterances
-  const utterances = texts.map(text => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    return utterance;
-  });
-  
-  // Calculate total speech duration (rough estimate)
-  const totalCharacters = texts.join('').length;
-  const estimatedDuration = totalCharacters * 50; // ~50ms per character
-  
-  let currentUtterance = 0;
-  let progressInterval;
-  
-  // Start progress bar animation
-  progressInterval = setInterval(() => {
-    const progress = (currentUtterance / utterances.length) * 100;
-    tutorialProgress.style.width = `${progress}%`;
-  }, 100);
-  
-  // Function to speak each utterance in sequence
-  function speakNext() {
-    if (currentUtterance >= utterances.length) {
-      clearInterval(progressInterval);
-      tutorialProgress.style.width = '100%';
-      return;
-    }
-    
-    const utterance = utterances[currentUtterance];
-    
-    utterance.onend = () => {
-      currentUtterance++;
-      speakNext();
-    };
-    
-    window.speechSynthesis.speak(utterance);
-  }
-  
-  // Start speaking
-  speakNext();
 }
 
 // Initialize the app when the page loads
