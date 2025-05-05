@@ -14,16 +14,18 @@
 <body>
   <div class="container">
     
-     <!-- Switch Camera Button-->
+    <!-- Camera Status Indicator -->
+    <div id="cameraStatus" class="camera-status">Camera is starting...</div>
+    
+    <!-- Switch Camera Button-->
     <div class="video-container">
       <video id="video" autoplay muted playsinline></video>
       <canvas id="canvas"></canvas>
     </div>
-      <div class="controls">
-        <button id="rotateCameraBtn">Rotate Camera</button>
-      </div>
+    <div class="controls">
+      <button id="rotateCameraBtn">Rotate Camera</button>
+    </div>
   
-    
     <div id="movePrompt">Keep moving the object</div>
     
     <!-- Settings Button -->
@@ -104,7 +106,6 @@
     </div>
     
     <img id="captured-image" class="captured-image" alt="">
-
     
     <div class="status">
       <div id="detectionInfo"></div>

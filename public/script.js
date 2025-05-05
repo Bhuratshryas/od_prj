@@ -9,6 +9,7 @@ const loadingContainer = document.getElementById('loading-container');
 const loadingProgress = document.getElementById('loading-progress');
 const capturedImageElement = document.getElementById('captured-image');
 const resultDiv = document.getElementById('result');
+const cameraStatus = document.getElementById('cameraStatus');
 
 // Settings Modal Elements
 const openSettingsBtn = document.getElementById('openSettingsBtn');
@@ -51,6 +52,9 @@ let currentFacingMode = 'user'; // 'user' = front, 'environment' = back
 // Initialize the application
 async function init() {
   try {
+    // Update camera status
+    updateCameraStatus('loading');
+    
     // Start loading chime immediately
     if (enableSounds) startLoadingChime();
 
@@ -63,10 +67,8 @@ async function init() {
     // Announce model loaded with text-to-speech
     announceModelLoaded();
 
-    // Start camera
-    setTimeout(() => {
-      startCamera();
-    }, 1000);
+    // Start camera immediately
+    startCamera();
 
     // Set initial button text
     rotateCameraBtn.textContent = 'Back Camera';
@@ -74,19 +76,19 @@ async function init() {
     // Set up event listeners for settings modal
     openSettingsBtn.addEventListener('click', () => {
       stopCamera();
+      updateCameraStatus('off');
       settingsModal.classList.add('active');
     });
     
     closeSettingsBtn.addEventListener('click', () => {
       settingsModal.classList.remove('active');
-      setTimeout(() => {
-        startCamera();
-      }, 1000);
+      startCamera();
     });
     
     // Set up event listeners for tutorial modal
     openTutorialBtn.addEventListener('click', () => {
       stopCamera();
+      updateCameraStatus('off');
       tutorialModal.classList.add('active');
       speakTutorialContent();
     });
@@ -94,9 +96,7 @@ async function init() {
     closeTutorialBtn.addEventListener('click', () => {
       tutorialModal.classList.remove('active');
       window.speechSynthesis.cancel(); // Stop any ongoing speech
-      setTimeout(() => {
-        startCamera();
-      }, 1000);
+      startCamera();
     });
     
     // Close modals with ESC key
@@ -104,16 +104,12 @@ async function init() {
       if (e.key === 'Escape') {
         if (settingsModal.classList.contains('active')) {
           settingsModal.classList.remove('active');
-          setTimeout(() => {
-            startCamera();
-          }, 1000);
+          startCamera();
         }
         if (tutorialModal.classList.contains('active')) {
           tutorialModal.classList.remove('active');
           window.speechSynthesis.cancel();
-          setTimeout(() => {
-            startCamera();
-          }, 1000);
+          startCamera();
         }
       }
     });
@@ -122,9 +118,7 @@ async function init() {
     settingsModal.addEventListener('mousedown', (e) => {
       if (e.target === settingsModal) {
         settingsModal.classList.remove('active');
-        setTimeout(() => {
-          startCamera();
-        }, 1000);
+        startCamera();
       }
     });
     
@@ -132,9 +126,7 @@ async function init() {
       if (e.target === tutorialModal) {
         tutorialModal.classList.remove('active');
         window.speechSynthesis.cancel();
-        setTimeout(() => {
-          startCamera();
-        }, 1000);
+        startCamera();
       }
     });
     
@@ -143,6 +135,29 @@ async function init() {
     
   } catch (error) {
     console.error('Error initializing app:', error);
+    updateCameraStatus('error', error.message);
+  }
+}
+
+// Update camera status indicator
+function updateCameraStatus(status, errorMessage = '') {
+  switch(status) {
+    case 'on':
+      cameraStatus.textContent = 'Camera is running';
+      cameraStatus.classList.remove('off');
+      break;
+    case 'off':
+      cameraStatus.textContent = 'Camera is turned off';
+      cameraStatus.classList.add('off');
+      break;
+    case 'loading':
+      cameraStatus.textContent = 'Camera is starting...';
+      cameraStatus.classList.remove('off');
+      break;
+    case 'error':
+      cameraStatus.textContent = 'Camera error: ' + errorMessage;
+      cameraStatus.classList.add('off');
+      break;
   }
 }
 
@@ -177,6 +192,9 @@ function speakTutorialContent() {
 // Start camera and detection
 async function startCamera() {
   try {
+    // Update status to loading
+    updateCameraStatus('loading');
+    
     // Stop any existing stream before starting a new one
     if (video.srcObject) {
       video.srcObject.getTracks().forEach(track => track.stop());
@@ -190,6 +208,9 @@ async function startCamera() {
     });
 
     video.srcObject = stream;
+    video.style.display = 'block';
+    canvas.style.display = 'block';
+    document.querySelector('.video-container').style.display = 'block';
 
     // Wait for video to be ready
     await new Promise(resolve => {
@@ -210,6 +231,9 @@ async function startCamera() {
     resultDiv.textContent = '';
     capturedImageElement.style.display = 'none';
     hideMovePrompt();
+    
+    // Update camera status to on
+    updateCameraStatus('on');
 
     // Reset timers
     noObjectDetectedTime = null;
@@ -222,6 +246,7 @@ async function startCamera() {
     detectObjects();
   } catch (error) {
     console.error('Error starting camera:', error);
+    updateCameraStatus('error', error.message);
   }
 }
 
@@ -264,9 +289,7 @@ function rotateCamera() {
     rotateCameraBtn.textContent = 'Switch to Back Camera';
   }
   if (isRunning) {
-    setTimeout(() => {
-      startCamera();
-    }, 2000); // 2-second delay, Restart camera with new facing mode
+    startCamera(); // Restart camera with new facing mode immediately
   }
 }
 

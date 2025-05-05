@@ -53,6 +53,21 @@ h2 {
   font-size: 1.3rem;
 }
 
+/* Camera Status */
+.camera-status {
+  background: #0071e3;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.camera-status.off {
+  background: #e74c3c;
+}
+
 /* Video & Canvas */
 .video-container {
   position: relative;
@@ -63,13 +78,11 @@ h2 {
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
   aspect-ratio: 16 / 9;
-  display: none;
 }
 
 #video, #canvas {
   width: 100%;
   height: 100%;
-  display: none;
   object-fit: cover;
 }
 
@@ -170,7 +183,6 @@ input[type="number"] {
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.03);
   margin-bottom: 18px;
-  display: none;
 }
 
 #statusMessage {
@@ -198,7 +210,6 @@ input[type="number"] {
   border-radius: 5px;
   overflow: hidden;
   position: relative;
-  display: none;
 }
 
 .loading-progress {
@@ -207,7 +218,6 @@ input[type="number"] {
   width: 0%;
   background: #0071e3;
   border-radius: 5px;
-  display: none;
 }
 
 .loading-text {
