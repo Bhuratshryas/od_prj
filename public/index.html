@@ -16,7 +16,14 @@
     <!-- Camera Status Indicator -->
     <div id="cameraStatus" class="camera-status">Camera is starting...</div>
     
-
+    <!-- Switch Camera Button-->
+    <div class="video-container">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="controls">
+      <button id="rotateCameraBtn">Rotate Camera</button>
+    </div>
       
     <!-- Settings Button -->
     <button id="openSettingsBtn" class="settings-open-btn" aria-label="Open Settings">
@@ -71,10 +78,18 @@
       </div>
     </div>
     
-  
+    <div class="loading-container" id="loading-container">
+      <div class="loading-bar">
+        <div class="loading-progress" id="loading-progress"></div>
+      </div>
+    </div>
     
+    <img id="captured-image" class="captured-image" alt="">
     
-  
+    <div class="status">
+      <div id="detectionInfo"></div>
+      <div id="result"></div>
+    </div>
   </div>
   
   <!-- Audio elements for feedback sounds -->
