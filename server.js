@@ -18,7 +18,9 @@ let userSettings = {
   name_prompt: true,
   expiration_range: true,
   longer_descrip: false,
-  brand_name: false
+  brand_name: false,
+  mold_detection: false,
+  quick_recipe: false
 };
 
 // Ensure sounds directory exists
@@ -44,6 +46,11 @@ const openai = new OpenAI({ apiKey: api_Key });
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.get('/get-settings', (req, res) => {
+  res.json(userSettings);
+});
+
 
 app.post('/save-settings', (req, res) => {
   userSettings = req.body;
