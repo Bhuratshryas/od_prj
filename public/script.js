@@ -10,6 +10,8 @@ const loadingProgress = document.getElementById('loading-progress');
 const capturedImageElement = document.getElementById('captured-image');
 const resultDiv = document.getElementById('result');
 const cameraStatus = document.getElementById('cameraStatus');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
 
 // Settings Modal Elements
 const openSettingsBtn = document.getElementById('openSettingsBtn');
@@ -85,12 +87,14 @@ async function init() {
     // Announce model loaded with text-to-speech
     announceModelLoaded();
 
-    // Start camera immediately
-    setTimeout(() => {
-      startCamera();
-    }, 1000);
+    // // Start camera immediately
+    // setTimeout(() => {
+    //   startCamera();
+    // }, 1000);
 
     // Set initial button text
+    startBtn.addEventListener('click', startCamera);
+    stopBtn.addEventListener('click', stopCamera);
     rotateCameraBtn.textContent = 'Back Camera';
     
     // Set up event listeners for settings modal
@@ -293,6 +297,8 @@ async function startCamera() {
 
     // Update UI
     isRunning = true;
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
     resultDiv.textContent = '';
     capturedImageElement.style.display = 'none';
     hideMovePrompt();
@@ -340,6 +346,8 @@ function stopCamera() {
 
     // Update UI
     isRunning = false;
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
     detectionInfo.textContent = '';
   }
 }

@@ -386,7 +386,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   outline: 2px solid #0071e3;
   outline-offset: 2px;
 }
-
+/* 
 .backCamera-controls {
   flex: 1;
   margin: 0;
@@ -420,10 +420,10 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   color: #7b7b7b;
   box-shadow: none;
   transform: none;
-}
+} */
 
 /* Settings Button */
-.settings-open-btn {
+/* .settings-open-btn {
   
   flex: 1;
   margin: 0;
@@ -444,7 +444,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   background: #f0f8ff;
   border-color: #2997ff;
   outline: none;
-}
+} */
 
 /* Settings Modal Styles */
 .settings-modal {
