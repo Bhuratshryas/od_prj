@@ -85,6 +85,9 @@ async function init() {
     // Stop chime once model is loaded
     stopLoadingChime();
 
+    // Load user settings
+    await loadSettings();
+
     // Announce model loaded with text-to-speech
     announceModelLoaded();
 
@@ -183,15 +186,45 @@ async function init() {
   }
 }
 
+
+// Load settings from server
+async function loadSettings() {
+  try {
+    const response = await fetch('/get-settings');
+    if (!response.ok) {
+      throw new Error('Failed to load settings');
+    }
+    
+    const settings = await response.json();
+    
+    // Update checkboxes based on loaded settings
+    namePromptCheckbox.checked = settings.name_prompt;
+    expirationRangeCheckbox.checked = settings.expiration_range;
+    brandNameCheckbox.checked = settings.brand_name;
+    moldDetectionCheckbox.checked = settings.mold_detection;
+    quickRecipeCheckbox.checked = settings.quick_recipe;
+    
+    console.log('Settings loaded:', settings);
+  } catch (error) {
+    console.error('Error loading settings:', error);
+    // Use default values if loading fails
+  }
+}
+
+
 // Save settings to server
 async function saveSettings() {
   try {
     const settings = {
       name_prompt: namePromptCheckbox.checked,
       expiration_range: expirationRangeCheckbox.checked,
-      longer_descrip: longerDescripCheckbox.checked,
-      brand_name: brandNameCheckbox.checked
+      brand_name: brandNameCheckbox.checked,
+      mold_detection: moldDetectionCheckbox.checked,
+      quick_recipe: quickRecipeCheckbox.checked,
     };
+
+    console.log('Saving settings:', settings);
+
 
     const response = await fetch('/save-settings', {
       method: 'POST',
@@ -203,9 +236,13 @@ async function saveSettings() {
       throw new Error('Failed to save settings');
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('Settings saved successfully:', result);
+    return result;
   } catch (error) {
     console.error('Error saving settings:', error);
+    alert('Failed to save settings. Please try again.');
+    return null;
   }
 }
 
@@ -1073,4 +1110,6 @@ modal.addEventListener('mousedown', (e) => {
   }
 });
 window.addEventListener('load', init);
+
+
 
