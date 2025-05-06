@@ -833,6 +833,9 @@ function captureImage() {
       // Stop processing sound
       stopProcessingSound();
 
+      // Stop camera before showing alert
+      stopCamera();
+
       setTimeout(() => {
         loadingContainer.style.display = 'none';
         loadingProgress.style.display = 'none';
@@ -844,6 +847,19 @@ function captureImage() {
         // Wait for complete sound to finish before speaking
         setTimeout(async () => {
           // Display result
+          //window.alert(data.description);
+          window.alert(data.description);
+
+          // After user clicks OK on the alert, restart the camera
+          startCamera();
+
+          // Reset states
+          isCapturing = false;
+          isSpeaking = false;
+          isPreCapturing = false;
+          noObjectDetectedTime = null;
+
+          // Also update the result div for reference
           resultDiv.textContent = data.description;
 
           // Check if the response is "unknown" or similar
@@ -901,6 +917,13 @@ function captureImage() {
       document.querySelector('.loading-bar').style.display = 'none';
       stopProcessingSound();
       console.error('Error:', error);
+
+      // Show error in alert
+      stopCamera();
+      window.alert('Error processing image');
+      startCamera();
+      
+      // Reset states
       resultDiv.textContent = 'Error processing image';
       isCapturing = false;
       isSpeaking = false;
