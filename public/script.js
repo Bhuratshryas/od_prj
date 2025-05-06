@@ -95,7 +95,7 @@ async function init() {
     // Set initial button text
     startBtn.addEventListener('click', startCamera);
     stopBtn.addEventListener('click', stopCamera);
-    rotateCameraBtn.textContent = 'Back Camera';
+    rotateCameraBtn.textContent = 'Front Camera';
     
     // Set up event listeners for settings modal
     openSettingsBtn.addEventListener('click', () => {
