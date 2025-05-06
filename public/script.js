@@ -184,86 +184,32 @@ async function init() {
   }
 }
 
-// Settings handling
-document.addEventListener('DOMContentLoaded', function() {
-  // Get references to all checkboxes
-  const namePromptCheckbox = document.getElementById('name_prompt');
-  const expirationRangeCheckbox = document.getElementById('expiration_range');
-  const brandNameCheckbox = document.getElementById('brand_name');
-  const moldDetectionCheckbox = document.getElementById('mold_detection');
-  const quickRecipeCheckbox = document.getElementById('quick_recipe');
-  
-  // Get references to settings modal elements
-  const settingsModal = document.getElementById('settingsModal');
-  const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-  
-  // Function to load current settings
-  function loadSettings() {
-    fetch('/get-settings')
-      .then(response => response.json())
-      .then(settings => {
-        namePromptCheckbox.checked = settings.name_prompt;
-        expirationRangeCheckbox.checked = settings.expiration_range;
-        brandNameCheckbox.checked = settings.brand_name;
-        moldDetectionCheckbox.checked = settings.mold_detection;
-        quickRecipeCheckbox.checked = settings.quick_recipe;
-      })
-      .catch(error => console.error('Error loading settings:', error));
-  }
-  
-  // Function to save settings
-  function saveSettings() {
+// Save settings to server
+async function saveSettings() {
+  try {
     const settings = {
       name_prompt: namePromptCheckbox.checked,
       expiration_range: expirationRangeCheckbox.checked,
+      longer_descrip: longerDescripCheckbox.checked,
       brand_name: brandNameCheckbox.checked,
       mold_detection: moldDetectionCheckbox.checked,
-      quick_recipe: quickRecipeCheckbox.checked
     };
-    
-    fetch('/save-settings', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings)
-    })
-    .then(response => response.json())
-    .then(data => console.log('Settings saved:', data))
-    .catch(error => console.error('Error saving settings:', error));
-  }
-  
-  // Event listener for settings button (assuming you have one)
-  const settingsBtn = document.getElementById('settingsBtn');
-  if (settingsBtn) {
-    settingsBtn.addEventListener('click', function() {
-      loadSettings(); // Load current settings before showing modal
-      settingsModal.style.display = 'block';
-    });
-  }
-  
-  // Event listener for close button
-  closeSettingsBtn.addEventListener('click', function() {
-    saveSettings(); // Save settings when closing
-    settingsModal.style.display = 'none';
-  });
-  
-  // Event listeners for checkboxes to handle mutual exclusivity
-  moldDetectionCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      // If mold detection is checked, uncheck quick recipe
-      quickRecipeCheckbox.checked = false;
-    }
-  });
-  
-  quickRecipeCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      // If quick recipe is checked, uncheck mold detection
-      moldDetectionCheckbox.checked = false;
-    }
-  });
-});
 
+    const response = await fetch('/save-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save settings');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving settings:', error);
+  }
+}
 
 // Update camera status indicator
 function updateCameraStatus(status, errorMessage = '') {

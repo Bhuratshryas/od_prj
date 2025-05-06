@@ -47,11 +47,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/get-settings', (req, res) => {
-  res.json(userSettings);
-});
-
-
 app.post('/save-settings', (req, res) => {
   userSettings = req.body;
   console.log('Saved settings:', userSettings);
