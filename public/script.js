@@ -58,7 +58,7 @@ let cameraPausedDueToInactivity = false;
 
 
 // Camera state
-let currentFacingMode = 'user'; // 'user' = front, 'environment' = back
+let currentFacingMode = 'environment'; // 'user' = front, 'environment' = back
 
 // Settings
 let volume = 0.5;
