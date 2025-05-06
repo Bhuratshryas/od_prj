@@ -446,6 +446,28 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   outline: none;
 } */
 
+.camera-status {
+  font-size: 1rem;
+  color: #6e6e73;
+  text-align: center;
+  margin-top: 8px;
+}
+.camera-status.active {
+  color: #0071e3;
+}
+.camera-status.inactive {
+  color: #e74c3c;
+}
+.camera-status.disabled {
+  color: #7b7b7b;
+}
+.camera-status.hidden {
+  display: none;
+}
+.camera-status.visible {
+  display: block;
+}
+
 /* Settings Modal Styles */
 .settings-modal {
   display: none; /* Hidden by default */
