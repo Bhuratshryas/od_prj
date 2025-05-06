@@ -26,8 +26,8 @@
       <button id="startBtn" aria-label="Start Scanning">Start Scanning</button>
       <button id="stopBtn" aria-label="Stop Scanning">Stop Scanning</button>
       <button id="rotateCameraBtn" aria-label="Rotate Camera">Rotate Camera</button>
-      <button id="openSettingsBtn" aria-label="Chnage Output">
-        Output
+      <button id="openSettingsBtn" aria-label="Change Output">
+        Output Settings
       </button>
       <button id="openTutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">
         Tutorial
@@ -39,42 +39,44 @@
     
     <!-- Settings Button -->
     
-
     <!-- Settings Modal -->
     <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
       <div class="settings-modal-content">
         <h2 id="settingsTitle">Ingredient Information Options</h2>
-        <fieldset>
-          <legend></legend>
-          <!-- NEW settings prompts -->
-          <div class="new-setting-item">
-            <label for="name_prompt">Ingredient Name</label>
-            <input type="checkbox" id="name_prompt" checked>
-          </div>
-          <div class="new-setting-item">
-            <label for="expiration_range">Expiration Range</label>
-            <input type="checkbox" id="expiration_range" unchecked>
-          </div>
-          <div class="new-setting-item">
-            <label for="brand_name">Brand Name</label>
-            <input type="checkbox" id="brand_name" unchecked>
-          </div>
-          <div class="new-setting-item"></div>
-            <label for="name_prompt">Mold Detection</label>
-            <input type="checkbox" id="name_prompt" unchecked>
-          </div>
-          <div class="new-setting-item"></div>
-            <label for="name_prompt">Quick Receipe</label>
-            <input type="checkbox" id="name_prompt" unchecked>
-          </div>
-
-          <!-- Close Settings Button -->
         <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Save Changes and Close">&times;</button>
         
+        <fieldset>
+          <legend class="visually-hidden">Select information to identify</legend>
           
+          <!-- Settings options with improved accessibility -->
+          <div class="new-setting-item">
+            <input type="checkbox" id="name_prompt" checked>
+            <label for="name_prompt">Ingredient Name</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="expiration_range" checked>
+            <label for="expiration_range">Expiration Range</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="brand_name">
+            <label for="brand_name">Brand Name</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="mold_detection">
+            <label for="mold_detection">Mold Detection</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="quick_recipe">
+            <label for="quick_recipe">Quick Recipe</label>
+          </div>
         </fieldset>
       </div>
     </div>
+
     
     <!-- Tutorial Button -->
    
