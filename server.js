@@ -17,10 +17,9 @@ app.use(express.json());
 let userSettings = {
   name_prompt: true,
   expiration_range: true,
-  longer_descrip: false,
-  brand_name: false,
-  mold_detection: false,
-  quick_recipe: false
+  brand_name: true,
+  mold_detection: true,
+  quick_recipe: true
 };
 
 // Ensure sounds directory exists
