@@ -19,7 +19,7 @@ let userSettings = {
   expiration_range: true,
   brand_name: true,
   mold_detection: true,
-  quick_recipe: true
+  quick_recipe: false
 };
 
 // Ensure sounds directory exists
@@ -74,7 +74,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
     if (includeName) fields.push("ingredient name in 1 to 2 words");
     if (includeRange) fields.push("expiration date range in months (e.g., 1 to 2 months)");
     if (includeMold) fields.push("mold detection (e.g., visible mold, no visible mold)");
-    if (includeRecipe) fields.push("recipe suggestion URL for the ingredient (e.g., https://example.com/recipe)");
+    if (includeRecipe) fields.push("food that people can make using this object");
 
 
     const systemPrompt = fields.length > 0
