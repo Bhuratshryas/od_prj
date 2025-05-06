@@ -57,19 +57,24 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
     await file.save(req.file.buffer);
     const imageUrl = file.publicUrl();
 
-    const { name_prompt: includeName, expiration_range: includeRange, brand_name: includeBrand } = userSettings;
+    const { name_prompt: includeName, expiration_range: includeRange, brand_name: includeBrand, mold_detection: includeMold, quick_recipe: includeRecipe } = userSettings;
 
     // Log to verify actual settings used
     console.log("Settings at image processing time:");
     console.log("includeName:", includeName);
     console.log("includeRange:", includeRange);
     console.log("includeBrand:", includeBrand);
+    console.log("includeMold:", includeMold);
+    console.log("includeRecipe:", includeRecipe);
 
     // Compose the system and user prompts based on enabled settings
     const fields = [];
     if (includeBrand) fields.push("brand name");
     if (includeName) fields.push("ingredient name in 1 to 2 words");
     if (includeRange) fields.push("expiration date range in months (e.g., 1 to 2 months)");
+    if (includeMold) fields.push("mold detection (e.g., visible mold, no visible mold)");
+    if (includeRecipe) fields.push("recipe suggestion URL for the ingredient (e.g., https://example.com/recipe)");
+
 
     const systemPrompt = fields.length > 0
       ? `You are an AI specialized in identifying the object in the image. Provide the following: ${fields.join(', ')}. No explanations, no extra words, just these pieces of information, separated by a comma, in this order. If no object is detected, respond with nothing.`
@@ -91,7 +96,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
           ]
         }
       ],
-      max_tokens: 30,
+      max_tokens: 150,
       temperature: 0.3
     });
 
@@ -109,12 +114,16 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
       const brand = includeBrand ? parts[i++] : null;
       const name = includeName ? parts[i++] : null;
       const range = includeRange ? parts[i++] : null;
+      const mold = includeMold ? parts[i++] : null;
+      const recipe = includeRecipe ? parts[i++] : null;
 
       // Build description based on the settings
       const descParts = [];
       if (brand) descParts.push(brand);
       if (name) descParts.push(name);
       if (range) descParts.push(`expires in ${range}`);
+      if (mold) descParts.push(mold);
+      if (recipe) descParts.push(`recipe suggestion link: ${recipe}`);
 
       // Set description only if any part is included
       if (descParts.length > 0) {
@@ -128,7 +137,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
         parts.includes("I'm sorry") ||
         parts.includes("I can't identify any object in the image.")
       ) {
-        description = "Try again";
+        description = "Try again with a different angle.";
       }
     } else {
       description = "Try again";  // Handle if AI doesn't return anything
