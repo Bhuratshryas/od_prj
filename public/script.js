@@ -834,7 +834,7 @@ function captureImage() {
       stopProcessingSound();
 
       // Stop camera before showing alert
-      stopCamera();
+      // stopCamera();
 
       setTimeout(() => {
         loadingContainer.style.display = 'none';
@@ -851,13 +851,13 @@ function captureImage() {
           window.alert(data.description);
 
           // After user clicks OK on the alert, explicitly restart the camera
-          startCamera().then(() => {
-          console.log('Camera successfully restarted after alert');
-          }).catch(err => {
-           console.error('Failed to restart camera after alert:', err);
-          // Try again if first attempt fails
-          setTimeout(() => startCamera(), 500);
-          });
+          // startCamera().then(() => {
+          // console.log('Camera successfully restarted after alert');
+          // }).catch(err => {
+          //  console.error('Failed to restart camera after alert:', err);
+          // // Try again if first attempt fails
+          // setTimeout(() => startCamera(), 500);
+          // });
 
           // Reset states
           isCapturing = false;
