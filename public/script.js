@@ -27,7 +27,6 @@ const tutorialModal = document.getElementById('tutorialModal');
 const namePromptCheckbox = document.getElementById('name_prompt');
 const expirationRangeCheckbox = document.getElementById('expiration_range');
 const brandNameCheckbox = document.getElementById('brand_name');
-const longerDescripCheckbox = document.getElementById('longer_descrip');
 const moldDetectionCheckbox = document.getElementById('mold_detection');
 const quickRecipeCheckbox = document.getElementById('quick_recipe');
 
@@ -185,23 +184,30 @@ async function init() {
 }
 
 // Save settings to server
-document.getElementById('closeSettingsBtn').addEventListener('click', async () => {
-  const settings = {
-    name_prompt: document.getElementById('name_prompt').checked,
-    expiration_range: document.getElementById('expiration_range').checked,
-    longer_descrip: document.getElementById('longer_descrip').checked,
-    brand_name: document.getElementById('brand_name').checked,
-    mold_detection: document.getElementById('mold_detection').checked,
-    quick_recipe: document.getElementById('quick_recipe').checked,
-  };
+async function saveSettings() {
+  try {
+    const settings = {
+      name_prompt: namePromptCheckbox.checked,
+      expiration_range: expirationRangeCheckbox.checked,
+      longer_descrip: longerDescripCheckbox.checked,
+      brand_name: brandNameCheckbox.checked
+    };
 
-  await fetch('/save-settings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(settings)
-  });
+    const response = await fetch('/save-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
 
-});
+    if (!response.ok) {
+      throw new Error('Failed to save settings');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving settings:', error);
+  }
+}
 
 // Update camera status indicator
 function updateCameraStatus(status, errorMessage = '') {

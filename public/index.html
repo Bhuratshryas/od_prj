@@ -39,43 +39,45 @@
     
     <!-- Settings Button -->
     
-       <!-- Settings Modal -->
-       <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
-        <div class="settings-modal-content">
-      
-        <!-- Close Settings Button -->
-        
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
+      <div class="settings-modal-content">
         <h2 id="settingsTitle">Ingredient Information Options</h2>
-           <fieldset>
-          <legend></legend>
-            <!-- NEW settings prompts -->
-            <div class="new-setting-item">
-              <label for="name_prompt">Ingredient Name</label>
-              <input type="checkbox" id="name_prompt" checked>
-            </div>
-            <div class="new-setting-item">
-              <label for="expiration_range">Expiration Range</label>
-              <input type="checkbox" id="expiration_range" checked>
-            </div>
-            <div class="new-setting-item">
-              <label for="brand_name">Brand Name</label>
-              <input type="checkbox" id="brand_name" checked>
-            </div>
-            <div class="new-setting-item"></div>
-              <label for="mold_detection">Mold Detection</label>
-              <input type="checkbox" id="mold_detection" checked>
-            </div>
-            <div class="new-setting-item"></div>
-              <label for="quick_recipe">Quick Recipe</label>
-              <input type="checkbox" id="quick_recipe" checked>
-            </div>
+        <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Save Changes and Close">&times;</button>
+        
+        <fieldset>
+          <legend class="visually-hidden">Select information to identify</legend>
+          
+          <!-- Settings options with improved accessibility -->
+          <div class="new-setting-item">
+            <input type="checkbox" id="name_prompt" checked>
+            <label for="name_prompt">Ingredient Name</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="expiration_range" checked>
+            <label for="expiration_range">Expiration Range</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="brand_name" checked>
+            <label for="brand_name">Brand Name</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="mold_detection" checked>
+            <label for="mold_detection">Mold Detection</label>
+          </div>
+          
+          <div class="new-setting-item">
+            <input type="checkbox" id="quick_recipe" checked>
+            <label for="quick_recipe">Quick Recipe</label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
 
-            <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Close Settings">&times;</button>
-          </fieldset>
-
-      <!-- Settings Modal -->
-
-
+    
     <!-- Tutorial Button -->
    
 
@@ -85,7 +87,7 @@
     <div id="tutorialModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="tutorialTitle" tabindex="-1">
       <div class="settings-modal-content">
         <!-- Close Tutorial Button -->
-        
+        <button id="closeTutorialBtn" class="settings-close-btn" aria-label="Close Tutorial">&times;</button>
         <h2 id="tutorialTitle">How to Use This App</h2>
         <div id="tutorialContent">
           <p>To Scan things, You can place your phone on the table in front of you to scan hands-free or rotate the camera to get closer to objects. </p>
@@ -93,8 +95,6 @@
           <p>You can customize the information you need, like object name, brand name, expiration date and long description based on Ingredient information button</p>
           <p>Now you can close the tutorial from top left corner and start scanning, just bring objects closer to the camera</p>
         </div>
-        <button id="closeTutorialBtn" class="settings-close-btn" aria-label="Close Tutorial">&times;</button>
-
       </div>
     </div>
     
