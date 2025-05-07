@@ -82,7 +82,7 @@ app.post('/process-image', upload.single('image'), async (req, res) => {
     if (includeName) fields.push("ingredient name in 1 to 2 words");
     if (includeRange) fields.push("expiration date range in months (e.g., 1 to 2 months)");
     if (includeMold) fields.push("mold detection (e.g., visible mold, no visible mold)");
-    if (includeRecipe) fields.push("food that people can make using this object");
+    if (includeRecipe) fields.push("share a recipe suggestion link");
     
     const systemPrompt = fields.length > 0 
       ? `You are an AI specialized in identifying the object in the image. Provide the following: ${fields.join(', ')}. No explanations, no extra words, just these pieces of information, separated by a comma, in this order. If no object is detected, respond with nothing.` 
