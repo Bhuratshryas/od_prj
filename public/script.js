@@ -58,6 +58,7 @@ let movePromptCount = 0;
 let cameraPausedDueToInactivity = false;
 
 
+
 // Camera state
 let currentFacingMode = 'environment'; // 'user' = front, 'environment' = back
 
@@ -387,6 +388,28 @@ function initAudio() {
     console.error('Error initializing audio:', error);
   }
 }
+
+// Text to speech for "Stop"
+function playStopText() {
+  const utterance = new SpeechSynthesisUtterance('Stop');
+  speechSynthesis.speak(utterance);
+}
+
+
+// Play sine wave sound
+function playSineWave() {
+  if (!audioContext) {
+    initAudio();
+  }
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+
+  setTimeout(() => {
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+  }, 1000); // play for 1 second
+}
+
+
 
 // Stop audio
 function stopAudio() {
@@ -945,6 +968,12 @@ window.addEventListener('load', () => {
     playModelLoadedChime();
     init();
   }, 1000); // 5 seconds
+});
+
+// Event listeners for buttons
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('playStopBtn').addEventListener('click', playStopText);
+  document.getElementById('playSineWaveBtn').addEventListener('click', playSineWave);
 });
 
 
