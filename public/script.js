@@ -81,12 +81,8 @@ async function init() {
 
     // Load COCO-SSD model
     model = await cocoSsd.load();
-
     // Stop chime once model is loaded
     stopLoadingChime();
-
-    // Load user settings
-    await loadSettings();
 
     // Announce model loaded with text-to-speech
     announceModelLoaded();
@@ -186,32 +182,6 @@ async function init() {
   }
 }
 
-
-// Load settings from server
-async function loadSettings() {
-  try {
-    const response = await fetch('/get-settings');
-    if (!response.ok) {
-      throw new Error('Failed to load settings');
-    }
-    
-    const settings = await response.json();
-    
-    // Update checkboxes based on loaded settings
-    namePromptCheckbox.checked = settings.name_prompt;
-    expirationRangeCheckbox.checked = settings.expiration_range;
-    brandNameCheckbox.checked = settings.brand_name;
-    moldDetectionCheckbox.checked = settings.mold_detection;
-    quickRecipeCheckbox.checked = settings.quick_recipe;
-    
-    console.log('Settings loaded:', settings);
-  } catch (error) {
-    console.error('Error loading settings:', error);
-    // Use default values if loading fails
-  }
-}
-
-
 // Save settings to server
 async function saveSettings() {
   try {
@@ -223,9 +193,6 @@ async function saveSettings() {
       quick_recipe: quickRecipeCheckbox.checked,
     };
 
-    console.log('Saving settings:', settings);
-
-
     const response = await fetch('/save-settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -236,13 +203,9 @@ async function saveSettings() {
       throw new Error('Failed to save settings');
     }
 
-    const result = await response.json();
-    console.log('Settings saved successfully:', result);
-    return result;
+    return await response.json();
   } catch (error) {
     console.error('Error saving settings:', error);
-    alert('Failed to save settings. Please try again.');
-    return null;
   }
 }
 
@@ -887,7 +850,6 @@ function captureImage() {
           // Display result
           //window.alert(data.description);
           window.alert(data.description);
-
           // After user clicks OK on the alert, explicitly restart the camera
           // startCamera().then(() => {
           // console.log('Camera successfully restarted after alert');
@@ -1110,6 +1072,3 @@ modal.addEventListener('mousedown', (e) => {
   }
 });
 window.addEventListener('load', init);
-
-
-
