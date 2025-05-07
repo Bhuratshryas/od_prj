@@ -66,7 +66,6 @@ h2 {
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
   aspect-ratio: 16 / 9;
   display: none;
-  display: none;
 }
 
 #video, #canvas {
@@ -74,7 +73,6 @@ h2 {
   height: 100%;
   display: none;
   object-fit: cover;
-  display: none;
   display: none;
 }
 
