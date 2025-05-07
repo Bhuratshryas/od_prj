@@ -297,9 +297,9 @@ async function startCamera() {
     });
 
     video.srcObject = stream;
-    //video.style.display = 'block';
-    //canvas.style.display = 'block';
-    //document.querySelector('.video-container').style.display = 'block';
+    video.style.display = 'block';
+    canvas.style.display = 'block';
+    document.querySelector('.video-container').style.display = 'block';
 
     // Wait for video to be ready
     await new Promise(resolve => {
@@ -419,7 +419,7 @@ function playSineWave() {
   if (!audioContext) {
     initAudio();
   }
-  oscillator.frequency.setValueAtTime(400, audioContext.currentTime); // A4 note
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
   gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
 
   setTimeout(() => {

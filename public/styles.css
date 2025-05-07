@@ -66,15 +66,14 @@ h2 {
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
   aspect-ratio: 16 / 9;
-  display: none;
+  display: block;
 }
 
 #video, #canvas {
   width: 100%;
   height: 100%;
-  display: none;
   object-fit: cover;
-  display: none;
+  display: block;
 }
 
 #canvas {
