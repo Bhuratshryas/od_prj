@@ -51,7 +51,7 @@ h1 {
 
 h2 {
   margin-bottom: 18px;
-  color: #0071e3;
+  color: #EF6E2C;
   font-weight: 500;
   font-size: 1.3rem;
 }
@@ -100,7 +100,7 @@ h2 {
 
 button {
   padding: 12px 28px;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
+  background: linear-gradient(90deg, #EF6E2C 60%, #FA8A50 100%);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -115,7 +115,7 @@ button {
 
 button:hover:not(:disabled),
 button:focus:not(:disabled) {
-  background: linear-gradient(90deg, #2997ff 60%, #0071e3 100%);
+  background: linear-gradient(90deg, #FA8A50 60%, #EF6E2C 100%);
   box-shadow: 0 4px 16px rgba(41,151,255,0.09);
   transform: translateY(-1px) scale(1.03);
 }
@@ -161,7 +161,7 @@ label {
 
 input[type="range"] {
   width: 65%;
-  accent-color: #0071e3;
+  accent-color: #EF6E2C;
 }
 
 input[type="number"] {
@@ -187,7 +187,7 @@ input[type="number"] {
 #statusMessage {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #0071e3;
+  color: #EF6E2C;
 }
 
 #detectionInfo {
@@ -216,7 +216,7 @@ input[type="number"] {
   position: absolute;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
+  background: linear-gradient(90deg, #EF6E2C 60%, #FA8A50 100%);
   border-radius: 5px;
   transition: width 0.4s cubic-bezier(.4,0,.2,1);
   display: none;
@@ -279,7 +279,7 @@ input[type="number"] {
 }
 
 .tutorial-toggle {
-  background: #0071e3;
+  background: #EF6E2C;
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -382,7 +382,7 @@ input[type="number"] {
 
 /* Accessibility: Focus Outline */
 button:focus-visible, .tutorial-toggle:focus-visible {
-  outline: 2px solid #0071e3;
+  outline: 2px solid #EF6E2C;
   outline-offset: 2px;
 }
 /* 
@@ -393,7 +393,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(90deg, #0071e3 60%, #2997ff 100%);
+  background: linear-gradient(90deg, #EF6E2C 60%, #2997ff 100%);
   color: #fff;
   font-size: 1rem;
   font-weight: 500;
@@ -403,7 +403,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
 }
 .backCamera-controls:hover,
 .backCamera-controls:focus {
-  background: linear-gradient(90deg, #2997ff 60%, #0071e3 100%);
+  background: linear-gradient(90deg, #2997ff 60%, #EF6E2C 100%);
   box-shadow: 0 4px 16px rgba(41,151,255,0.09);
   transform: translateY(-1px) scale(1.03);
 }
@@ -431,8 +431,8 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   align-items: center;
   justify-content: center;
   background: #fff;
-  color: #0071e3;
-  border: 1.5px solid #0071e3;
+  color: #EF6E2C;
+  border: 1.5px solid #EF6E2C;
   font-size: 1rem;
   font-weight: 500;
   width: 100%;
@@ -464,7 +464,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   margin-top: 8px;
 }
 .camera-status.active {
-  color: #0071e3;
+  color: #EF6E2C;
 }
 .camera-status.inactive {
   color: #e74c3c;
@@ -528,7 +528,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
 }
 .settings-close-btn:hover,
 .settings-close-btn:focus {
-  color: #0071e3;
+  color: #EF6E2C;
 }
 
 
