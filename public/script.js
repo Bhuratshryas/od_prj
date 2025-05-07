@@ -93,6 +93,7 @@ async function init() {
     //   startCamera();
     // }, 1000);
 
+    // Open tutorial modal if this is the first visit
     openTutorialOnStart();
 
     // Set initial button text
