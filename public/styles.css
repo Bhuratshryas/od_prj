@@ -265,7 +265,7 @@ input[type="number"] {
 
 #movePrompt.visible {
   opacity: 1;
-  display: block;
+  display: none;
 }
 
 /* Tutorial Button & Panel */
@@ -347,7 +347,6 @@ input[type="number"] {
   .video-container {
     border-radius: 8px;
     aspect-ratio: 16 / 9;
-    display: none;
   }
   .settings {
     padding: 12px 5px;
@@ -455,6 +454,7 @@ button:focus-visible, .tutorial-toggle:focus-visible {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+  display: none;
 }
 
 .camera-status {
