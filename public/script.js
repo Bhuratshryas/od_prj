@@ -93,6 +93,8 @@ async function init() {
     //   startCamera();
     // }, 1000);
 
+    openTutorialOnStart();
+
     // Set initial button text
     startBtn.addEventListener('click', startCamera);
     stopBtn.addEventListener('click', stopCamera);
@@ -110,7 +112,7 @@ async function init() {
       await saveSettings();
       settingsModal.classList.remove('active');
       setTimeout(() => {
-        startCamera();
+        // startCamera();
       }, 1000);
     });
     
@@ -127,7 +129,7 @@ async function init() {
       tutorialModal.classList.remove('active');
       window.speechSynthesis.cancel(); // Stop any ongoing speech
       setTimeout(() => {
-        startCamera();
+        // startCamera();
       }, 1000);
     });
     
@@ -138,7 +140,7 @@ async function init() {
           saveSettings().then(() => {
             settingsModal.classList.remove('active');
             setTimeout(() => {
-              startCamera();
+              // startCamera();
             }, 1000);
           });
         }
@@ -146,7 +148,7 @@ async function init() {
           tutorialModal.classList.remove('active');
           window.speechSynthesis.cancel();
           setTimeout(() => {
-            startCamera();
+            // startCamera();
           }, 1000);
         }
       }
@@ -158,7 +160,7 @@ async function init() {
         saveSettings().then(() => {
           settingsModal.classList.remove('active');
           setTimeout(() => {
-            startCamera();
+            // startCamera();
           }, 1000);
         });
       }
@@ -169,7 +171,7 @@ async function init() {
         tutorialModal.classList.remove('active');
         window.speechSynthesis.cancel();
         setTimeout(() => {
-          startCamera();
+          // startCamera();
         }, 1000);
       }
     });
@@ -180,6 +182,21 @@ async function init() {
   } catch (error) {
     console.error('Error initializing app:', error);
     updateCameraStatus('error', error.message);
+  }
+}
+
+function openTutorialOnStart() {
+  // Check if this is the first visit
+  if (!localStorage.getItem('tutorialShown')) {
+    const tutorialModal = document.getElementById('tutorialModal');
+    if (tutorialModal) {
+      tutorialModal.classList.add('active');
+      stopCamera();
+      updateCameraStatus('off');
+      
+      // Set flag in localStorage so tutorial won't show again
+      localStorage.setItem('tutorialShown', 'true');
+    }
   }
 }
 
@@ -406,7 +423,7 @@ function playSineWave() {
 
   setTimeout(() => {
     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-  }, 1000); // play for 1 second
+  }, 3000); // play for 3 second
 }
 
 
