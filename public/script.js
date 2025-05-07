@@ -419,7 +419,7 @@ function playSineWave() {
   if (!audioContext) {
     initAudio();
   }
-  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+  oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // A4 note
   gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
 
   setTimeout(() => {
