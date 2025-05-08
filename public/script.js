@@ -888,65 +888,10 @@ function captureImage() {
 
         // Wait for complete sound to finish before speaking
         setTimeout(async () => {
-          
-          // Instead of window.alert(data.description);
-function showCustomAlert(message) {
-  // Stop the camera immediately when showing the alert
-  stopCamera();
-  const modal = document.createElement('div');
-  modal.style.position = 'fixed';
-  modal.style.left = '0';
-  modal.style.top = '0';
-  modal.style.width = '100%';
-  modal.style.height = '100%';
-  modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-  modal.style.display = 'flex';
-  modal.style.justifyContent = 'center';
-  modal.style.alignItems = 'center';
-  modal.style.zIndex = '9999';
-  
-  const content = document.createElement('div');
-  content.style.backgroundColor = 'white';
-  content.style.padding = '20px';
-  content.style.borderRadius = '5px';
-  content.style.maxWidth = '80%';
-  
-  const text = document.createElement('p');
-  text.textContent = message;
-  
-  const button = document.createElement('button');
-  button.textContent = 'OK';
-  button.style.marginTop = '10px';
-  button.onclick = function() {
-    document.body.removeChild(modal);
-    // Add any code you want to run after dialog is closed
-    stopCamera();
-  };
-  
-  content.appendChild(text);
-  content.appendChild(button);
-  modal.appendChild(content);
-  document.body.appendChild(modal);
-}
-
-// Replace your alert with this
-setTimeout(async () => {
-  // Display result
-  showCustomAlert(data.description);
-  // Don't call stopCamera() here, it's called in the button click handler
-}, /* your timeout value */);
-
-          
-          
-          
-          
-          
-          
-          
           // Display result
           //window.alert(data.description);
-          //window.alert(data.description);
-          //stopCamera();
+          window.alert(data.description);
+          stopCamera();
           // After user clicks OK on the alert, explicitly restart the camera
           // startCamera().then(() => {
           // console.log('Camera successfully restarted after alert');
