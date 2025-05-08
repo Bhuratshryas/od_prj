@@ -14,30 +14,25 @@
 <body>
   <div class="container">
     <!-- Camera Status Indicator -->
-    <div id="cameraStatus" class="camera-status">Camera is starting...</div>
+    <div id="cameraStatus" class="camera-status visible">Camera is starting...</div>
     
-    <!-- Switch Camera Button-->
+    <!-- Video Container -->
     <div class="video-container">
       <video id="video" autoplay muted playsinline></video>
       <canvas id="canvas"></canvas>
     </div>
   
-    <div class="controls">
-      <button id="startBtn" aria-label="Start Scanning">Start Scanning</button>
-      <button id="stopBtn" aria-label="Stop Scanning">Stop Scanning</button>
-      <button id="rotateCameraBtn" aria-label="Rotate Camera">Rotate Camera</button>
-      <button id="openSettingsBtn" aria-label="Change Output">
-        Output Settings
-      </button>
-      <button id="openTutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">
-        Tutorial
-      </button>
-
+    <div class="controls-container">
+      <div class="controls">
+        <button id="startBtn" aria-label="Start Scanning">Start Scanning</button>
+        <button id="stopBtn" aria-label="Stop Scanning">Stop Scanning</button>
+        <button id="rotateCameraBtn" aria-label="Rotate Camera">Rotate Camera</button>
+        <button id="openSettingsBtn" aria-label="Change Output">Output Settings</button>
+        <button id="openTutorialBtn" class="settings-open-btn" aria-label="Open Tutorial">Tutorial</button>
+      </div>
     </div>
   
     <div id="movePrompt">Keep moving the object</div>
-    
-    <!-- Settings Button -->
     
     <!-- Settings Modal -->
     <div id="settingsModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="settingsTitle" tabindex="-1">
@@ -77,18 +72,10 @@
         <button id="closeSettingsBtn" class="settings-close-btn" aria-label="Save Changes and Close">&times;</button>
       </div>
     </div>
-
-    
-    <!-- Tutorial Button is great-->
-
-
-    
     
     <!-- Tutorial Modal -->
     <div id="tutorialModal" class="settings-modal" aria-modal="true" role="dialog" aria-labelledby="tutorialTitle" tabindex="-1">
       <div class="settings-modal-content">
-        <!-- Close Tutorial Button -->
-        
         <h2 id="tutorialTitle">How to Use This App</h2>
         <div id="tutorialContent">
           <p>To start scanning, press the start button which activates the rear camera on your phone. You don't need to press button to capture objects - this is a completely hands-free experience.</p> 
