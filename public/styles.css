@@ -67,7 +67,7 @@ h2 {
   aspect-ratio: 16 / 9;
   display: none;
 <<<<<<< HEAD
-  display: block; /* Changed from none to block */
+  display: none;
 =======
   display: none;
 >>>>>>> 9c0733f (remove camera)
@@ -77,12 +77,9 @@ h2 {
   width: 100%;
   height: 100%;
   display: none;
-  object-fit: cover;
-<<<<<<< HEAD
-  display: block; /* Changed from none to block */
-=======
   display: none;
->>>>>>> 9c0733f (remove camera)
+  object-fit: cover;
+  display: none;
 }
 
 #canvas {
