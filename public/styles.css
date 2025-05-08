@@ -66,11 +66,6 @@ h2 {
   box-shadow: 0 4px 16px rgba(0,0,0,0.09);
   aspect-ratio: 16 / 9;
   display: none;
-<<<<<<< HEAD
-  display: none;
-=======
-  display: none;
->>>>>>> 9c0733f (remove camera)
 }
 
 #video, #canvas {
