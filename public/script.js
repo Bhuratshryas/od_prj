@@ -915,19 +915,19 @@ function captureImage() {
                             data.description.toLowerCase() === "unclear" ||
                             data.description.toLowerCase() === "try again" ||
                             data.description.toLowerCase() === "unidentified";
-          isSpeaking = true;
+          isSpeaking = false;
 
           if (isUnknown) {
             // First speak the unknown result
-            const unknownUtterance = new SpeechSynthesisUtterance(data.description);
-            unknownUtterance.rate = 1.0;
-            unknownUtterance.pitch = 1.0;
+            //const unknownUtterance = new SpeechSynthesisUtterance(data.description);
+            //unknownUtterance.rate = 1.0;
+            //unknownUtterance.pitch = 1.0;
 
             // Wait for the unknown utterance to finish
-            await new Promise((resolve) => {
-              unknownUtterance.onend = resolve;
-              window.speechSynthesis.speak(unknownUtterance);
-            });
+            //await new Promise((resolve) => {
+             // unknownUtterance.onend = resolve;
+              //window.speechSynthesis.speak(unknownUtterance);
+            //});
 
             // Then prompt to rotate the object
             await playRotateObjectPrompt();
@@ -939,21 +939,21 @@ function captureImage() {
             noObjectDetectedTime = null; // Reset no object timer
           } else {
             // Normal case - just speak the result
-            const utterance = new SpeechSynthesisUtterance(data.description);
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
+            //const utterance = new SpeechSynthesisUtterance(data.description);
+            //utterance.rate = 1.0;
+            //utterance.pitch = 1.0;
 
             // When speech ends, resume normal operation
-            utterance.onend = () => {
-              setTimeout(() => {
-                isSpeaking = false;
-                isCapturing = false;
-                isPreCapturing = false;
-                noObjectDetectedTime = null; // Reset no object timer
-              }, 2000); // 2 second pause before resuming detection
-            };
+            //utterance.onend = () => {
+              //setTimeout(() => {
+            //     isSpeaking = false;
+            //     isCapturing = false;
+            //     isPreCapturing = false;
+            //     noObjectDetectedTime = null; // Reset no object timer
+            //   }, 2000); // 2 second pause before resuming detection
+            // };
             
-            window.speechSynthesis.speak(utterance);
+            //window.speechSynthesis.speak(utterance);
           }
         }, 1000);
       }, 500);
