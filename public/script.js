@@ -233,20 +233,18 @@ function updateCameraStatus(status, errorMessage = '') {
   switch(status) {
     case 'on':
       cameraStatus.textContent = 'Camera is running';
+      cameraStatus.textContent = 'Camera is running';
       cameraStatus.classList.remove('off');
       break;
     case 'off':
-      cameraStatus.textContent = 'Camera is turned off';
       cameraStatus.textContent = 'Camera is turned off';
       cameraStatus.classList.add('off');
       break;
     case 'loading':
       cameraStatus.textContent = 'Camera is starting...';
-      cameraStatus.textContent = 'Camera is starting...';
       cameraStatus.classList.remove('off');
       break;
     case 'error':
-      cameraStatus.textContent = 'Camera error: ' + errorMessage;
       cameraStatus.textContent = 'Camera error: ' + errorMessage;
       cameraStatus.classList.add('off');
       break;
