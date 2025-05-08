@@ -345,7 +345,6 @@ input[type="number"] {
 }
 
 .settings-close-btn {
-  position: absolute;
   top: 16px;
   right: 18px;
   background: none;
@@ -354,10 +353,6 @@ input[type="number"] {
   color: #bbb;
   cursor: pointer;
   transition: color 0.18s;
-  padding: 0;
-  min-width: auto;
-  max-width: none;
-  box-shadow: none;
 }
 
 .settings-close-btn:hover,
