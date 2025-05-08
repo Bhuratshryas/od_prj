@@ -567,10 +567,10 @@ function playStopAlert() {
 function playRotateObjectPrompt() {
   if (enableSounds) {
     // Use text-to-speech for the rotate prompt
-    const utterance = new SpeechSynthesisUtterance("Please rotate the object");
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+    //const utterance = new SpeechSynthesisUtterance("Please rotate the object");
+    //utterance.rate = 1.0;
+    //utterance.pitch = 1.0;
+    //utterance.volume = 1.0;
 
     // Return a promise that resolves when speech is done
     return new Promise((resolve) => {
