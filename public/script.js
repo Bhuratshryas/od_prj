@@ -232,7 +232,7 @@ async function saveSettings() {
 function updateCameraStatus(status, errorMessage = '') {
   switch(status) {
     case 'on':
-      cameraStatus.textContent = 'Camera is running';
+      cameraStatus.textContent = 'Camera';
       cameraStatus.classList.remove('off');
       break;
     case 'off':
