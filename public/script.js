@@ -891,6 +891,8 @@ function captureImage() {
           
           // Instead of window.alert(data.description);
 function showCustomAlert(message) {
+  // Stop the camera immediately when showing the alert
+  stopCamera();
   const modal = document.createElement('div');
   modal.style.position = 'fixed';
   modal.style.left = '0';
