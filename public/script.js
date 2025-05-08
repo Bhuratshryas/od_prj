@@ -254,7 +254,7 @@ function updateCameraStatus(status, errorMessage = '') {
 // Announce model loaded with text-to-speech
 function announceModelLoaded() {
   if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance("Welcome to Ident AI.");
+    const utterance = new SpeechSynthesisUtterance("Welcome to Prism.");
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
